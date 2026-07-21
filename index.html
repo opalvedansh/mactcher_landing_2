@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matchr — Where Brands and Creators Create Impact</title>
+  <meta name="description" content="Matchr is a modern platform that connects brands and creators for authentic collaboration that drives real results. Swipe. Match. Collaborate." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:  #E8450A;
+      --black:   #0A0A0A;
+      --white:   #FFFFFF;
+      --gray:    #6B7280;
+      --gray-lt: #9CA3AF;
+      --font:    'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 52px;
+      height: 70px;
+      background: rgba(255,255,255,0.94);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--orange);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-text {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--orange); }
+
+    .nav-cta {
+      background: var(--black);
+      color: var(--white) !important;
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .nav-cta:hover { background: var(--orange); transform: translateY(-1px); }
+
+    /* ─── HERO ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      padding-top: 70px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    /* Dark blob on the right */
+    .hero-bg-dark {
+      position: absolute;
+      top: 0; right: 0;
+      width: 54%;
+      height: 100%;
+      background: var(--black);
+      clip-path: ellipse(115% 92% at 100% 50%);
+      z-index: 0;
+    }
+
+    /* Left copy column */
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 64px 40px 80px 72px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1.5px solid var(--orange);
+      border-radius: 999px;
+      padding: 7px 18px;
+      margin-bottom: 36px;
+      width: fit-content;
+      animation: fadeUp 0.65s ease both;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--orange);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .hero-badge span {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--orange);
+      letter-spacing: 0.02em;
+    }
+
+    .hero-headline {
+      font-size: clamp(36px, 4.8vw, 62px);
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -2.5px;
+      color: var(--black);
+      margin-bottom: 22px;
+      animation: fadeUp 0.65s 0.1s ease both;
+    }
+    .hero-headline .accent {
+      color: var(--orange);
+      font-style: italic;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      font-weight: 400;
+      color: var(--gray);
+      line-height: 1.72;
+      max-width: 330px;
+      margin-bottom: 44px;
+      animation: fadeUp 0.65s 0.2s ease both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.65s 0.3s ease both;
+    }
+
+    .btn-fill {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 40px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 22px rgba(232,69,10,0.35);
+    }
+    .btn-fill:hover {
+      background: #c93a07;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(232,69,10,0.42);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--black);
+      border: 1.8px solid var(--black);
+      border-radius: 999px;
+      padding: 14px 40px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover {
+      background: var(--black);
+      color: #fff;
+      transform: translateY(-2px);
+    }
+
+    /* Right visual column */
+    .hero-visual {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 56px 80px 20px;
+    }
+
+    .phones-wrapper {
+      width: 100%;
+      max-width: 490px;
+      animation: floatIn 1s 0.15s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .phones-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 48px 96px rgba(0,0,0,0.6));
+      animation: float 5.5s ease-in-out infinite;
+    }
+
+    /* ─── TRUST BAR ─── */
+    .trust-bar {
+      background: #F8F8F8;
+      border-top: 1px solid #EBEBEB;
+      border-bottom: 1px solid #EBEBEB;
+      padding: 22px 72px;
+      display: flex;
+      align-items: center;
+      gap: 52px;
+      flex-wrap: wrap;
+    }
+    .trust-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gray-lt);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .trust-stats {
+      display: flex;
+      align-items: center;
+      gap: 44px;
+      flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      display: block;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--black);
+      letter-spacing: -0.5px;
+    }
+    .stat-lbl {
+      display: block;
+      font-size: 12px;
+      color: var(--gray-lt);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* ─── KEYFRAMES ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(36px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0);     }
+      50%      { transform: translateY(-13px); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      nav { padding: 0 28px; }
+      .nav-links { gap: 20px; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-bg-dark { display: none; }
+      .hero-copy {
+        padding: 56px 32px 40px;
+        align-items: center;
+        text-align: center;
+      }
+      .hero-badge { margin: 0 auto 32px; }
+      .hero-sub { max-width: 460px; margin-inline: auto; }
+      .hero-ctas { justify-content: center; }
+      .hero-visual {
+        background: var(--black);
+        padding: 48px 32px 64px;
+        clip-path: ellipse(120% 100% at 50% 100%);
+      }
+      .phones-wrapper { max-width: 360px; }
+      .trust-bar { padding: 20px 32px; gap: 24px; }
+      .trust-stats { gap: 24px; }
+    }
+    @media (max-width: 640px) {
+      nav { padding: 0 18px; }
+      .nav-links { display: none; }
+      .hero-copy { padding: 44px 20px 36px; }
+      .hero-headline { letter-spacing: -1.5px; }
+      .btn-fill, .btn-outline { padding: 13px 28px; font-size: 14px; }
+      .trust-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 18px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav role="banner" aria-label="Main navigation">
+  <a href="/" class="nav-logo" aria-label="Matchr home">
+    <div class="logo-icon">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M0 16V0L10 9L20 0V16H17V5.5L10 13L3 5.5V16H0Z" fill="white"/>
+      </svg>
+    </div>
+    <span class="logo-text">matchr</span>
+  </a>
+
+  <ul class="nav-links" role="list">
+    <li><a href="#how-it-works">How its Work</a></li>
+    <li><a href="#brands">For Brands</a></li>
+    <li><a href="#influencers">For Influencer</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#get-app" class="nav-cta">Get the App</a></li>
+  </ul>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section class="hero" aria-labelledby="hero-h1" id="hero">
+  <div class="hero-bg-dark" aria-hidden="true"></div>
+
+  <!-- Left: copy -->
+  <div class="hero-copy">
+    <div class="hero-badge" role="doc-subtitle">
+      <span class="badge-dot" aria-hidden="true"></span>
+      <span>Swipe . Match . Collaborate</span>
+    </div>
+
+    <h1 class="hero-headline" id="hero-h1">
+      Where Brands<br>
+      and <em class="accent">Creators</em><br>
+      Create Impact
+    </h1>
+
+    <p class="hero-sub">
+      Matchr is a modern platform that connects<br>
+      brands and creators for authentic collaboration<br>
+      that drive real results
+    </p>
+
+    <div class="hero-ctas">
+      <a href="#influencers" id="cta-influencer" class="btn-fill">Influencer</a>
+      <a href="#brands"      id="cta-brand"      class="btn-outline">Brand</a>
+    </div>
+  </div>
+
+  <!-- Right: phones visual -->
+  <div class="hero-visual" aria-label="Matchr app previewed on two smartphones">
+    <div class="phones-wrapper">
+      <img
+        src="phones.png"
+        alt="Two smartphones displaying the Matchr app — a brand card for The Ordinary with 1.2M followers and a creator profile with 320k followers and swipe actions"
+        width="490"
+        height="490"
+        fetchpriority="high"
+      />
+    </div>
+  </div>
+</section>
+
+<!-- ════════════ TRUST BAR ════════════ -->
+<aside class="trust-bar" id="trust-bar" aria-label="Platform statistics">
+  <span class="trust-label">Trusted by</span>
+  <div class="trust-stats">
+    <div class="stat-item">
+      <span class="stat-num" data-target="10" data-suffix="K+" data-prefix="">10K+</span>
+      <span class="stat-lbl">Influencers</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="5" data-suffix="M+" data-prefix="$">5M+</span>
+      <span class="stat-lbl">Paid to Creators</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="500" data-suffix="+" data-prefix="">500+</span>
+      <span class="stat-lbl">Brand Campaigns</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="98" data-suffix="%" data-prefix="">98%</span>
+      <span class="stat-lbl">Match Satisfaction</span>
+    </div>
+  </div>
+</aside>
+
+<script>
+  /* Count-up animation triggered by IntersectionObserver */
+  const statEls = document.querySelectorAll('.stat-num[data-target]');
+
+  const countUp = (el) => {
+    const target   = parseFloat(el.dataset.target);
+    const suffix   = el.dataset.suffix || '';
+    const prefix   = el.dataset.prefix || '';
+    const duration = 1500;
+    const start    = performance.now();
+
+    const tick = (now) => {
+      const elapsed  = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased    = 1 - Math.pow(1 - progress, 3);
+      const val      = Math.round(target * eased);
+      el.textContent = prefix + val + suffix;
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  };
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      io.unobserve(entry.target);
+      countUp(entry.target);
+    });
+  }, { threshold: 0.5 });
+
+  statEls.forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
