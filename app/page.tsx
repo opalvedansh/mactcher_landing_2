@@ -1,12 +1,17 @@
+"use client";
+import { useEffect, useRef, useState } from "react";
+
+
 const heroAssets = {
   blob: "https://www.figma.com/api/mcp/asset/c1380703-6e38-420e-bdff-50bc62a92970",
+  phoneBackdrop: "https://www.figma.com/api/mcp/asset/e949f99d-b465-4497-a59c-5eb9043813e6",
   phoneOne: "https://www.figma.com/api/mcp/asset/87055ea8-3701-409b-bbaa-b6f5da6c22e2",
   phoneOneMask: "https://www.figma.com/api/mcp/asset/f109ca50-90de-4d6c-b385-65b6302a835e",
   phoneOneImage: "https://www.figma.com/api/mcp/asset/23af099b-5b06-4f2a-a504-d895e3bf8f27",
   phoneTwo: "https://www.figma.com/api/mcp/asset/a81bc08b-f2ab-4f44-8a68-6af3f01861c6",
   phoneTwoMask: "https://www.figma.com/api/mcp/asset/91ed0110-4adb-47ac-8a66-80c350a4a823",
   phoneTwoImage: "https://www.figma.com/api/mcp/asset/d9ad86ec-a815-4023-95ec-6d966afbc080",
-  logo: "https://www.figma.com/api/mcp/asset/2b19fae8-4818-4062-9d26-983422b388fc",
+  logo: "/my_logo-removebg-preview.png",
 };
 
 const introCards = [
@@ -28,115 +33,128 @@ const howItWorks = [
   {
     title: "Discover",
     description: "Browse creators or campaigns curated for you.",
-    image: "https://www.figma.com/api/mcp/asset/c7b63499-b95b-471f-b6da-6b954c049a4e",
-    tall: true,
+    image: "https://www.figma.com/api/mcp/asset/9025cda9-889b-449c-9ab7-17ef091ab833",
+    leftPhone: "https://www.figma.com/api/mcp/asset/23ef2a56-786c-4d9d-9f8c-ce133b7c289b",
+    rightPhone: "https://www.figma.com/api/mcp/asset/4f89ee64-aa3f-41ac-81a6-788ae4a96b22",
+    goldAccent: "https://www.figma.com/api/mcp/asset/6ac7b134-0c8c-416d-990c-160a7f84d402",
   },
   {
     title: "Swipe",
     description: "Like the profiles that fit your goals.",
-    image: "https://www.figma.com/api/mcp/asset/16e60891-7ecc-4ee0-b778-14d81ac8e199",
+    image: "https://www.figma.com/api/mcp/asset/e558f88b-44de-4b39-9350-6cee8e622994",
   },
   {
     title: "Match",
     description: "Mutual interest unlocks instant conversations.",
-    image: "https://www.figma.com/api/mcp/asset/4c7550ec-e757-4517-8654-360c960491f7",
-    matchImage: "https://www.figma.com/api/mcp/asset/2a557dcf-1057-4294-93cf-49344eecb1b9",
+    image: "https://www.figma.com/api/mcp/asset/2b5e635d-4bc0-4508-b08c-e05531aeecfe",
+    matchImage: "https://www.figma.com/api/mcp/asset/a35aab3d-3ea9-41bc-b883-aa04179319f2",
   },
   {
     title: "Collaborate",
     description: "Launch campaigns, create content, and grow together.",
-    image: "https://www.figma.com/api/mcp/asset/39c92a97-82fe-4a3b-90ba-b61e24fb9366",
-    matchImage: "https://www.figma.com/api/mcp/asset/ee6e1b8f-a8a5-4fbe-91dd-9e80839284cf",
+    image: "https://www.figma.com/api/mcp/asset/6a482b5b-5693-4775-9944-9c48fa49b041",
+    matchImage: "https://www.figma.com/api/mcp/asset/90c27701-6af7-48d3-9211-5b71fad965a4",
   },
 ];
 
 const personasBrand = [
   {
     label: "Startups",
-    image: "https://www.figma.com/api/mcp/asset/6d232dff-818d-4f92-9010-f9c1c266f440",
+    image: "/5a68eea5aa00ed1cd09b8caa72778acf8f4afb40%20copy.png",
   },
   {
     label: "D2C Brands",
-    image: "https://www.figma.com/api/mcp/asset/7686ee3f-dd90-42cb-8310-4c7df9e316fc",
+    image: "/87a457996d6cbaf8db6cee6bb05433f011487f92.png",
   },
   {
     label: "Marketing Teams",
-    image: "https://www.figma.com/api/mcp/asset/ab1738f7-9ec4-4c0b-a123-3051c7e3544c",
+    image: "/95ebc2d23fc5e794e6ff27a4804abff9528cb7bd.png",
   },
   {
     label: "Agencies",
-    image: "https://www.figma.com/api/mcp/asset/31ff9409-68cb-43dd-ba27-4b77a9a9206b",
+    image: "/1c5e9d04f15ac328faa499b366d81191aa8cd93a%20copy.png",
   },
 ];
 
 const personasCreator = [
   {
     label: "UGC Creators",
-    image: "https://www.figma.com/api/mcp/asset/ead65584-3f43-4396-9abc-97e04e9dfa3b",
+    image: "/a03db1359935105e519b4e6492849dda2f3abbb8.png",
   },
   {
     label: "Influencers",
-    image: "https://www.figma.com/api/mcp/asset/406587c6-8774-4b0c-93d0-f2f4869e0e2b",
+    image: "/87b10d6d8067b3a0f0f5cb9ca215f00d97e8affe.png",
   },
   {
     label: "Content Creators",
-    image: "https://www.figma.com/api/mcp/asset/0abd2bf8-c397-4d68-8517-4617892254fb",
+    image: "/09f8b230b4370ed72dfb07573c58bf4ceb027fcc.png",
   },
   {
     label: "Freelancers",
-    image: "https://www.figma.com/api/mcp/asset/466a0aaa-2ca8-4e08-a67e-aabac5481a54",
+    image: "/d755521445c1926821ac8640aee4886781b67954.png",
   },
 ];
 
-const whyMatchr = [
+type FeatureCardItem = {
+  title: string;
+  description: string;
+  image: string;
+  className: string;
+  secondaryImage?: string;
+  accent?: boolean;
+  hideTextAndGradient?: boolean;
+  icons?: string[];
+};
+
+const whyMatchr: FeatureCardItem[] = [
   {
     title: "Smart Matching",
     description:
       "Discover creators and campaigns tailored to your niche, audience, goals, and preferences through a swipe-first experience.",
-    image: "https://www.figma.com/api/mcp/asset/692b4cbe-231a-45a5-b2f4-1f9ccf4d0bec",
+    image: "/2d90c4c3670560f96d89a082de1e482eb669840d%20copy.png",
     className: "feature-card feature-card-large",
   },
   {
     title: "Mutual Interest",
     description:
       "Conversations only begin when both sides express interest, creating more relevant and intentional collaborations.",
-    image: "https://www.figma.com/api/mcp/asset/9b6ee75e-001d-4659-9f91-da76a17d8fb6",
+    image: "/73dadc3ac68ec6edc1e5e9e45da88b374d016b0d.png",
     secondaryImage:
-      "https://www.figma.com/api/mcp/asset/fdffceeb-2926-4b65-a390-a8b4341eff61",
+      "/d6c6a0938c99f3838727c8fabe7ffb111c1455b1.png",
     className: "feature-card feature-card-wide",
   },
   {
     title: "Verified Profiles",
     description: "Browse trusted creators and verified brands",
-    image: "https://www.figma.com/api/mcp/asset/c5e65474-5599-4a5a-b6c3-94bab4c6d9dd",
+    image: "/36ae065af77d2d2f139a213d965bab9a5e0508c3.png",
     className: "feature-card feature-card-small",
     accent: true,
   },
   {
     title: "Audience Insights",
     description: "View follower demographics, engagement rates, reach, etc",
-    image: "https://www.figma.com/api/mcp/asset/c5e65474-5599-4a5a-b6c3-94bab4c6d9dd",
+    image: "/ec47291d6a6b9ec2a895b25092b9df47a936469d.png",
     className: "feature-card feature-card-small",
   },
   {
     title: "Creator Portfolio",
     description:
       "Explore previous collaborations, content samples, media kits etc",
-    image: "https://www.figma.com/api/mcp/asset/9093284a-b583-4ce1-8105-9486cc05fb89",
+    image: "/220317729ca819cb07815fd8a49a86314143bd40.png",
     className: "feature-card feature-card-small",
   },
   {
     title: "Real-Time Chat",
-    description:
-      "Discuss campaign details, negotiate deliverables, share files, and communicate without leaving the platform.",
-    image: "https://www.figma.com/api/mcp/asset/99890dec-991f-4503-8405-ff1fbc0203eb",
+    description: "",
+    image: "/WhatsApp Image 2026-08-06 at 21.52.07.jpeg",
+    hideTextAndGradient: true,
     className: "feature-card feature-card-side",
   },
   {
     title: "Performance Analytics",
     description:
       "Track campaign performance, engagement, reach, creator insights, and collaboration history with detailed analytics.",
-    image: "https://www.figma.com/api/mcp/asset/8216ddcc-96fe-44f1-9201-14b1e79fdee1",
+    image: "/d46343e02e8fb895df83fa6f7e5eadf561b56b82.png",
     className: "feature-card feature-card-side",
   },
 ];
@@ -184,65 +202,121 @@ function PhoneMockup({
 }
 
 export default function HomePage() {
+  const navRef = useRef<HTMLElement>(null);
+  const [activePersona, setActivePersona] = useState<"influencer" | "brand">("influencer");
+
+  const personaCopy = {
+    influencer: {
+      headline: (<>Where Brands and <span>Creators</span> Create Impact</>),
+      sub: "Discover campaigns that match your niche, swipe on brands you love, and start collaborating — all in one place.",
+      scrollTo: "#for-creators",
+    },
+    brand: {
+      headline: (<>Where <span>Brands</span> Meet the Right Creators</>),
+      sub: "Find authentic creators aligned with your audience, launch campaigns, and measure results — from one platform.",
+      scrollTo: "#for-brands",
+    },
+  };
+
+  const copy = personaCopy[activePersona];
+
+  const handleToggle = (persona: "influencer" | "brand") => {
+    setActivePersona(persona);
+    const target = document.querySelector(personaCopy[persona].scrollTo);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const onScroll = () => {
+      nav.classList.toggle("scrolled", window.scrollY > 10);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
     <main className="page-shell">
+      {/* Fixed nav pill — always pinned top-right */}
+      <nav className="floating-nav" ref={navRef}>
+        {navItems.map((item) => (
+          <a href={item.href} key={item.label}>
+            {item.label}
+          </a>
+        ))}
+        <a className="button button--dark button--nav" href="#cta">
+          Get the App
+        </a>
+      </nav>
+
       <section className="hero" id="top">
         <div className="hero__blob-wrap">
           <img alt="" className="hero__blob" src={heroAssets.blob} />
         </div>
+
+        {/* Logo in the hero — scrolls away naturally */}
         <header className="hero__header">
           <div className="logo-mark">
             <img alt="Matchr" src={heroAssets.logo} />
-            <span>matchr</span>
+            <span>Matchr</span>
           </div>
-          <nav className="hero__nav">
-            {navItems.map((item) => (
-              <a href={item.href} key={item.label}>
-                {item.label}
-              </a>
-            ))}
-            <a className="button button--dark button--nav" href="#cta">
-              Get the App
-            </a>
-          </nav>
         </header>
 
-        <div className="hero__content">
-          <div className="hero__copy">
-            <div className="pill pill--outline">Swipe . Match . Collaborate</div>
-            <h1>
-              Where Brands and <span>Creators</span> Create Impact
-            </h1>
-            <p>
-              Matchr is a modern platform that connects brands and creators for
-              authentic collaboration that dive real results
-            </p>
-            <div className="hero__toggle">
-              <button className="toggle-pill toggle-pill--active" type="button">
-                Influencer
-              </button>
-              <button className="toggle-pill" type="button">
-                Brand
-              </button>
+          <div className="hero__content">
+            <div className="hero__copy">
+              <div className="pill pill--outline">Swipe . Match . Collaborate</div>
+              <h1 key={activePersona} className="hero__headline--animated">
+                {copy.headline}
+              </h1>
+              <p key={activePersona + "sub"} className="hero__sub--animated">
+                {copy.sub}
+              </p>
+              <div className="hero__toggle">
+                <button
+                  className={`toggle-pill${activePersona === "influencer" ? " toggle-pill--active" : ""}`}
+                  type="button"
+                  onClick={() => handleToggle("influencer")}
+                >
+                  Influencer
+                </button>
+                <button
+                  className={`toggle-pill${activePersona === "brand" ? " toggle-pill--active" : ""}`}
+                  type="button"
+                  onClick={() => handleToggle("brand")}
+                >
+                  Brand
+                </button>
+              </div>
+            </div>
+
+            <div className="hero__phones">
+              <img
+                alt=""
+                aria-hidden="true"
+                className="hero__phone-backdrop"
+                src={heroAssets.phoneBackdrop}
+              />
+              <img
+                alt=""
+                className="hero__floating-badge"
+                src="/Screenshot_2026-08-06_at_8.12.39_PM-removebg-preview.png"
+              />
+              <PhoneMockup
+                className="hero-phone--left"
+                image={heroAssets.phoneOneImage}
+                mask={heroAssets.phoneOneMask}
+                shell={heroAssets.phoneOne}
+              />
+              <PhoneMockup
+                className="hero-phone--right"
+                image={heroAssets.phoneTwoImage}
+                mask={heroAssets.phoneTwoMask}
+                shell={heroAssets.phoneTwo}
+              />
             </div>
           </div>
-
-          <div className="hero__phones">
-            <PhoneMockup
-              className="hero-phone--left"
-              image={heroAssets.phoneOneImage}
-              mask={heroAssets.phoneOneMask}
-              shell={heroAssets.phoneOne}
-            />
-            <PhoneMockup
-              className="hero-phone--right"
-              image={heroAssets.phoneTwoImage}
-              mask={heroAssets.phoneTwoMask}
-              shell={heroAssets.phoneTwo}
-            />
-          </div>
-        </div>
-      </section>
+        </section>
 
       <section className="trust-strip" aria-label="Trusted partners">
         <div className="trust-strip__mark" />
@@ -274,7 +348,7 @@ export default function HomePage() {
             <img
               alt="Creator portrait"
               className="intro-image-card__image"
-              src="https://www.figma.com/api/mcp/asset/2fa31dc9-ce4f-4e7d-85cc-01d4c0e1bf00"
+              src="/creator-portrait.png"
             />
           </div>
           <article className={introCards[1].className}>
@@ -285,23 +359,49 @@ export default function HomePage() {
       </section>
 
       <section className="section how-section" id="how-it-works">
-        <div className="how-section__heading">
-          <h2>How it works?</h2>
-          <p>
-            Discover creators, find campaigns, and build authentic partnerships
-            through a smarter, faster, and more engaging collaboration
-            experience.
-          </p>
-        </div>
-
         <div className="how-grid">
+          <div className="how-section__heading">
+            <h2>How it works?</h2>
+            <p>
+              Discover creators, find campaigns, and build authentic partnerships
+              through a smarter, faster, and more engaging collaboration
+              experience.
+            </p>
+          </div>
+
           <article className="how-card how-card--discover">
-            <img alt="" src={howItWorks[0].image} />
-            <div className="how-card__overlay" />
-            <div className="how-card__content">
-              <h3>{howItWorks[0].title}</h3>
-              <p>{howItWorks[0].description}</p>
+            <div className="how-card__frame">
+              <img alt="" src={howItWorks[0].image} />
+              <div className="how-card__overlay" />
+              <div className="how-card__content">
+                <h3>{howItWorks[0].title}</h3>
+                <p>{howItWorks[0].description}</p>
+              </div>
             </div>
+            <img
+              alt=""
+              aria-hidden="true"
+              className="how-card__phone how-card__phone--left"
+              src={howItWorks[0].leftPhone}
+            />
+            <img
+              alt=""
+              aria-hidden="true"
+              className="how-card__gold-accent how-card__gold-accent--left"
+              src={howItWorks[0].goldAccent}
+            />
+            <img
+              alt=""
+              aria-hidden="true"
+              className="how-card__phone how-card__phone--right"
+              src={howItWorks[0].rightPhone}
+            />
+            <img
+              alt=""
+              aria-hidden="true"
+              className="how-card__gold-accent how-card__gold-accent--right"
+              src={howItWorks[0].goldAccent}
+            />
           </article>
 
           <article className="how-card how-card--swipe">
@@ -316,7 +416,9 @@ export default function HomePage() {
           <article className="how-card how-card--match">
             <div className="how-card__split">
               <img alt="" src={howItWorks[2].image} />
-              <img alt="" src={howItWorks[2].matchImage} />
+              <div className="how-card__split-image how-card__split-image--flipped">
+                <img alt="" src={howItWorks[2].matchImage} />
+              </div>
             </div>
             <div className="how-card__overlay" />
             <div className="how-card__content how-card__content--top">
@@ -328,7 +430,9 @@ export default function HomePage() {
           <article className="how-card how-card--collaborate">
             <div className="how-card__split">
               <img alt="" src={howItWorks[3].image} />
-              <img alt="" src={howItWorks[3].matchImage} />
+              <div className="how-card__split-image how-card__split-image--flipped">
+                <img alt="" src={howItWorks[3].matchImage} />
+              </div>
             </div>
             <div className="how-card__overlay how-card__overlay--strong" />
             <div className="how-card__content">
@@ -340,21 +444,23 @@ export default function HomePage() {
       </section>
 
       <section className="section showcase-section">
-        <div className="section-heading section-heading--center">
+        <div className="showcase-section__heading">
           <h2>Built for brands. Loved by creators.</h2>
           <p>
             A two-sided platform where every swipe brings the right partnership
             one step closer.
           </p>
         </div>
-        <div className="showcase-section__phones">
+        <div className="showcase-section__image-container">
           <img
-            alt="Brand discovery mobile preview"
-            src="https://www.figma.com/api/mcp/asset/0d5543a3-b645-4207-b1e8-2959167c6717"
+            src="/Screenshot_2026-07-23_at_1.35.35_AM-removebg-preview.webp"
+            alt="Platform showcase left"
+            className="showcase-section__image"
           />
           <img
-            alt="Creator discovery mobile preview"
-            src="https://www.figma.com/api/mcp/asset/c614cff9-5887-46cf-be3e-ede8f798fc29"
+            src="/Screenshot 2026-08-06 at 8.12.02 PM.png"
+            alt="Platform showcase right"
+            className="showcase-section__image"
           />
         </div>
       </section>
@@ -381,7 +487,7 @@ export default function HomePage() {
           <img
             alt="Brand campaign visual"
             className="audience-row__hero"
-            src="https://www.figma.com/api/mcp/asset/04599d54-1856-4dcc-8f6a-e29403b0d73c"
+            src="/32b2baf8ab2ab5327717409f439623caf96a3e43.png"
           />
         </div>
 
@@ -389,7 +495,7 @@ export default function HomePage() {
           <img
             alt="Creator setup visual"
             className="audience-row__hero"
-            src="https://www.figma.com/api/mcp/asset/7404be73-0de5-4127-b973-724c13b236da"
+            src="/30f3b3daa8b058046d6afddb8fa34ea663c501e8.png"
           />
           <div className="audience-row__copy audience-row__copy--right">
             <h3>I&apos;m a Creator</h3>
@@ -418,7 +524,7 @@ export default function HomePage() {
         </div>
 
         <div className="feature-grid">
-          <article className={whyMatchr[0].className}>
+          <article className={`${whyMatchr[0].className} feature-card--boom`}>
             <img alt="" src={whyMatchr[0].image} />
             <div className="feature-card__overlay" />
             <div className="feature-card__content">
@@ -443,11 +549,20 @@ export default function HomePage() {
             {whyMatchr.slice(5).map((feature) => (
               <article className={feature.className} key={feature.title}>
                 <img alt="" src={feature.image} />
-                <div className="feature-card__overlay" />
-                <div className="feature-card__content">
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </div>
+                {feature.icons && (
+                  <div className="feature-card__icons">
+                    {feature.icons.map((icon, i) => (
+                      <img key={i} src={icon} alt="" className="feature-card__icon" />
+                    ))}
+                  </div>
+                )}
+                {!feature.hideTextAndGradient && <div className="feature-card__overlay" />}
+                {!feature.hideTextAndGradient && (
+                  <div className="feature-card__content">
+                    <h3>{feature.title}</h3>
+                    <p>{feature.description}</p>
+                  </div>
+                )}
               </article>
             ))}
           </div>
@@ -459,11 +574,13 @@ export default function HomePage() {
                 key={feature.title}
               >
                 <img alt="" src={feature.image} />
-                <div className="feature-card__overlay" />
-                <div className="feature-card__content">
-                  <h3>{feature.title}</h3>
-                  <p>{feature.description}</p>
-                </div>
+                {!feature.hideTextAndGradient && <div className="feature-card__overlay" />}
+                {!feature.hideTextAndGradient && (
+                  <div className="feature-card__content">
+                    <h3>{feature.title}</h3>
+                    <p>{feature.description}</p>
+                  </div>
+                )}
               </article>
             ))}
           </div>
@@ -485,7 +602,7 @@ export default function HomePage() {
         <img
           alt="Woman using Matchr"
           className="cta-section__image"
-          src="https://www.figma.com/api/mcp/asset/5be8a8d3-165a-488e-aaac-035906e5657c"
+          src="/871d2c7f53d688d8ba4f6749551cfc7c91cf842b.png"
         />
       </section>
 
