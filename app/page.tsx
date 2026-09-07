@@ -223,7 +223,9 @@ export default function HomePage() {
   const handleToggle = (persona: "influencer" | "brand") => {
     setActivePersona(persona);
     const target = document.querySelector(personaCopy[persona].scrollTo);
-    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   };
 
   useEffect(() => {
@@ -251,9 +253,7 @@ export default function HomePage() {
       </nav>
 
       <section className="hero" id="top">
-        <div className="hero__blob-wrap">
-          <img alt="" className="hero__blob" src={heroAssets.blob} />
-        </div>
+
 
         {/* Logo in the hero — scrolls away naturally */}
         <header className="hero__header">
@@ -290,29 +290,11 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="hero__phones">
+            <div className="hero__phones" style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end' }}>
               <img
-                alt=""
-                aria-hidden="true"
-                className="hero__phone-backdrop"
-                src={heroAssets.phoneBackdrop}
-              />
-              <img
-                alt=""
-                className="hero__floating-badge"
-                src="/Screenshot_2026-08-06_at_8.12.39_PM-removebg-preview.png"
-              />
-              <PhoneMockup
-                className="hero-phone--left"
-                image={heroAssets.phoneOneImage}
-                mask={heroAssets.phoneOneMask}
-                shell={heroAssets.phoneOne}
-              />
-              <PhoneMockup
-                className="hero-phone--right"
-                image={heroAssets.phoneTwoImage}
-                mask={heroAssets.phoneTwoMask}
-                shell={heroAssets.phoneTwo}
+                alt="Hero App Layout"
+                src="/Gemini_Generated_Image_56h0uw56h0uw56h0.png"
+                style={{ width: '120%', height: 'auto', objectFit: 'contain', zIndex: 1, mixBlendMode: 'darken', transform: 'translate(10%, -10%)' }}
               />
             </div>
           </div>
@@ -369,76 +351,20 @@ export default function HomePage() {
             </p>
           </div>
 
-          <article className="how-card how-card--discover">
-            <div className="how-card__frame">
-              <img alt="" src={howItWorks[0].image} />
-              <div className="how-card__overlay" />
-              <div className="how-card__content">
-                <h3>{howItWorks[0].title}</h3>
-                <p>{howItWorks[0].description}</p>
-              </div>
-            </div>
-            <img
-              alt=""
-              aria-hidden="true"
-              className="how-card__phone how-card__phone--left"
-              src={howItWorks[0].leftPhone}
-            />
-            <img
-              alt=""
-              aria-hidden="true"
-              className="how-card__gold-accent how-card__gold-accent--left"
-              src={howItWorks[0].goldAccent}
-            />
-            <img
-              alt=""
-              aria-hidden="true"
-              className="how-card__phone how-card__phone--right"
-              src={howItWorks[0].rightPhone}
-            />
-            <img
-              alt=""
-              aria-hidden="true"
-              className="how-card__gold-accent how-card__gold-accent--right"
-              src={howItWorks[0].goldAccent}
-            />
+          <article className="how-card how-card--discover" style={{ overflow: 'visible' }}>
+            <img alt="" src="/discover-placeholder-fixed.png" style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scale(1.05)' }} />
           </article>
 
           <article className="how-card how-card--swipe">
-            <img alt="" src={howItWorks[1].image} />
-            <div className="how-card__overlay" />
-            <div className="how-card__content">
-              <h3>{howItWorks[1].title}</h3>
-              <p>{howItWorks[1].description}</p>
-            </div>
+            <img alt="" src="/swipe-placeholder.png" />
           </article>
 
           <article className="how-card how-card--match">
-            <div className="how-card__split">
-              <img alt="" src={howItWorks[2].image} />
-              <div className="how-card__split-image how-card__split-image--flipped">
-                <img alt="" src={howItWorks[2].matchImage} />
-              </div>
-            </div>
-            <div className="how-card__overlay" />
-            <div className="how-card__content how-card__content--top">
-              <h3>{howItWorks[2].title}</h3>
-              <p>{howItWorks[2].description}</p>
-            </div>
+            <img alt="" src="/match-placeholder.png" />
           </article>
 
           <article className="how-card how-card--collaborate">
-            <div className="how-card__split">
-              <img alt="" src={howItWorks[3].image} />
-              <div className="how-card__split-image how-card__split-image--flipped">
-                <img alt="" src={howItWorks[3].matchImage} />
-              </div>
-            </div>
-            <div className="how-card__overlay how-card__overlay--strong" />
-            <div className="how-card__content">
-              <h3>{howItWorks[3].title}</h3>
-              <p>{howItWorks[3].description}</p>
-            </div>
+            <img alt="" src="/collaborate-placeholder.png" />
           </article>
         </div>
       </section>
@@ -606,36 +532,44 @@ export default function HomePage() {
         />
       </section>
 
-      <footer className="footer">
-        <div className="footer__links">
-          <div>
-            <h3>Product</h3>
-            <a href="#features">Features</a>
-            <a href="#how-it-works">How It Works</a>
-            <a href="#cta">Pricing</a>
+      <footer className="footer-modern">
+        <div className="footer-modern__top">
+          <div className="footer-modern__brand">
+            <div className="logo-mark">
+              <img alt="Matchr" src={heroAssets.logo} />
+              <span style={{ color: '#fff' }}>Matchr</span>
+            </div>
+            <p className="footer-modern__tagline">
+              Where brands and creators create impact.
+            </p>
           </div>
-          <div>
-            <h3>Company</h3>
-            <a href="mailto:support@matcher.com">About</a>
-            <a href="mailto:support@matcher.com">Contact</a>
-            <a href={encodeURI("/rules.md")}>Privacy Policy</a>
-            <a href={encodeURI("/rules.md")}>Terms of Service</a>
-          </div>
-          <div>
-            <h3>Social</h3>
-            <a href="https://instagram.com" target="_blank">
-              Instagram
-            </a>
-            <a href="https://x.com" target="_blank">
-              Twitter
-            </a>
+          
+          <div className="footer-modern__links">
+            <div className="footer-col">
+              <h3>Product</h3>
+              <a href="#features">Features</a>
+              <a href="#how-it-works">How It Works</a>
+              <a href="#cta">Pricing</a>
+            </div>
+            <div className="footer-col">
+              <h3>Company</h3>
+              <a href="mailto:support@matcher.com">About</a>
+              <a href="mailto:support@matcher.com">Contact</a>
+              <a href="/rules.md">Privacy Policy</a>
+              <a href="/rules.md">Terms of Service</a>
+            </div>
+            <div className="footer-col">
+              <h3>Social</h3>
+              <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+              <a href="https://x.com" target="_blank" rel="noreferrer">Twitter</a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
+            </div>
           </div>
         </div>
-        <img
-          alt="Matchr footer mark"
-          className="footer__mark"
-          src="https://www.figma.com/api/mcp/asset/8ae3521e-62d2-4d47-b09c-5291575a2590"
-        />
+        
+        <div className="footer-modern__bottom">
+          <p>&copy; {new Date().getFullYear()} Matchr. All rights reserved.</p>
+        </div>
       </footer>
     </main>
   );
