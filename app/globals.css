@@ -41,6 +41,7 @@ img {
 
 .page-shell {
   overflow-x: hidden;
+  min-width: 1920px;
 }
 
 .section,
@@ -183,7 +184,7 @@ img {
 .hero h1 {
   max-width: 953px;
   margin-top: 76px;
-  font-size: clamp(4rem, 6vw, 7.1875rem);
+  font-size: 115px;
   font-weight: 500;
   line-height: 1.08;
 }
@@ -1123,6 +1124,10 @@ img {
 }
 
 @media (max-width: 1280px) {
+
+  .page-shell {
+    min-width: 100%;
+  }
 
   .hero,
   .section,

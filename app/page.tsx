@@ -356,15 +356,15 @@ export default function HomePage() {
           </article>
 
           <article className="how-card how-card--swipe">
-            <img alt="" src="/swipe-placeholder.png" />
+            <img alt="" src="/swipe-placeholder-fixed.png" />
           </article>
 
           <article className="how-card how-card--match">
-            <img alt="" src="/match-placeholder.png" />
+            <img alt="" src="/match-placeholder-fixed.png" />
           </article>
 
           <article className="how-card how-card--collaborate">
-            <img alt="" src="/collaborate-placeholder.png" />
+            <img alt="" src="/collaborate-placeholder-fixed.png" />
           </article>
         </div>
       </section>
