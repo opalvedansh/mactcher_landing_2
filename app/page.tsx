@@ -294,7 +294,7 @@ export default function HomePage() {
               <img
                 alt="Hero App Layout"
                 src="/Gemini_Generated_Image_56h0uw56h0uw56h0.png"
-                style={{ width: '120%', height: 'auto', objectFit: 'contain', zIndex: 1, mixBlendMode: 'darken', transform: 'translate(10%, -10%)' }}
+                className="hero__phones-image"
               />
             </div>
           </div>
@@ -351,8 +351,8 @@ export default function HomePage() {
             </p>
           </div>
 
-          <article className="how-card how-card--discover" style={{ overflow: 'visible' }}>
-            <img alt="" src="/discover-placeholder-fixed.png" style={{ width: '100%', height: '100%', objectFit: 'contain', transform: 'scale(1.05)' }} />
+          <article className="how-card how-card--discover">
+            <img alt="" src="/discover-placeholder-fixed.png" />
           </article>
 
           <article className="how-card how-card--swipe">

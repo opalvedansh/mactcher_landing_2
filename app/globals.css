@@ -333,6 +333,15 @@ img {
   height: 965px;
 }
 
+.hero__phones-image {
+  width: 120%;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+  mix-blend-mode: darken;
+  transform: translate(10%, -10%);
+}
+
 .button {
   display: inline-flex;
   align-items: center;
@@ -1310,84 +1319,342 @@ img {
 }
 
 @media (max-width: 768px) {
-  .logo-mark span {
-    font-size: 44px;
+  html {
+    zoom: 1;
   }
 
-  .hero__nav {
-    gap: 16px;
+  .page-shell, .hero, .section, .footer {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    overflow-x: hidden;
+  }
+
+  .section {
+    padding-top: 60px !important;
+    padding-bottom: 60px !important;
+  }
+
+  .floating-nav {
+    top: 16px;
+    right: 16px;
+    left: 16px;
+    width: calc(100% - 32px);
+    justify-content: space-between;
+    padding: 8px 16px;
+    gap: 0;
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-radius: 40px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  .floating-nav a:not(.button) {
+    display: none;
+  }
+
+  .floating-nav::before {
+    content: "Matchr";
+    font-size: 20px;
+    font-weight: 800;
+    font-family: var(--font-mulish), sans-serif;
+    color: #000;
+    margin-left: 12px;
+  }
+
+  .floating-nav .button--nav {
+    width: 140px;
+    height: 48px;
     font-size: 16px;
   }
 
-  .hero h1,
-  .section h2,
-  .cta-section h2 {
-    font-size: 42px;
+  .hero {
+    padding-top: 120px !important; 
+    min-height: auto;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
-  .hero p,
-  .intro-section__lede,
-  .how-section__heading p,
-  .section-heading p,
-  .cta-section p,
-  .audience-row__copy p {
-    font-size: 20px;
+  .hero__header {
+    display: none;
   }
 
-  .pill,
-  .toggle-pill,
-  .button--primary {
+  .hero__copy {
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pill {
+    min-height: 48px;
+    padding: 12px 24px;
+    font-size: 16px;
+  }
+
+  .hero h1 {
+    font-size: 52px;
+    line-height: 1.1;
+    margin-top: 32px;
+    letter-spacing: -0.05em;
+  }
+
+  .hero p {
     font-size: 18px;
-  }
-
-  .toggle-pill,
-  .button--nav {
-    width: 100%;
+    margin: 20px 0 32px;
+    line-height: 1.5;
   }
 
   .hero__toggle {
-    gap: 16px;
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .toggle-pill {
+    width: 100%;
+    max-width: 160px;
+    height: 54px;
+    font-size: 16px;
   }
 
   .hero__phones {
-    min-height: 560px;
+    width: 100%;
+    min-height: auto;
+    margin: 40px 0 0 0;
+    display: flex;
+    justify-content: center;
   }
 
-  .hero__phone-backdrop {
-    top: 10%;
-    left: 50%;
-    width: 176%;
-    transform: translateX(-48%);
+  .hero__phones-image {
+    width: 100%;
+    height: auto;
+    transform: none;
+    margin-top: 0;
   }
 
-  .hero-phone--left {
-    left: 8%;
-    top: 9%;
-    width: 280px;
+  .trust-strip {
+    gap: 20px;
+    padding: 32px 0 48px;
   }
 
-  .hero-phone--left .hero-phone__screen {
-    left: 20px;
-    top: 6px;
-    width: 254px;
-    height: 523px;
+  .trust-strip__mark {
+    width: 64px;
+    height: 64px;
   }
 
-  .hero-phone--right {
-    right: 4%;
-    top: 18%;
-    width: 245px;
+  .showcase-section {
+    padding-top: 60px !important;
   }
 
-  .hero-phone--right .hero-phone__screen {
-    left: 4px;
-    top: 6px;
-    width: 224px;
-    height: 432px;
+  .showcase-section__heading h2 {
+    font-size: 40px;
+  }
+
+  .showcase-section__heading p {
+    font-size: 18px;
+  }
+
+  .showcase-section__image-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    margin-top: 40px;
+  }
+
+  .showcase-section__image {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+  }
+
+  .intro-section__top {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .intro-section__top h2, .section h2, .cta-section h2 {
+    font-size: 40px;
+  }
+
+  .intro-section__lede {
+    text-align: center;
+    font-size: 18px;
+    margin: 0;
+  }
+
+  .intro-section__cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .intro-card {
+    padding: 32px 24px;
+    border-radius: 32px;
+  }
+
+  .intro-card h3 {
+    font-size: 28px;
+  }
+
+  .intro-card p {
+    font-size: 18px;
+  }
+
+  .intro-image-card {
+    height: auto;
+    width: 100%;
+    border-radius: 32px;
+    overflow: hidden;
+    margin: 0;
+    background: var(--accent);
+    padding-top: 32px;
+  }
+
+  .intro-image-card__base {
+    display: none;
+  }
+
+  .intro-image-card__image {
+    position: relative;
+    width: 100%;
+    height: auto;
+    inset: auto;
+    border-radius: 0 0 32px 32px;
+  }
+
+  .how-section__heading p, .section-heading p, .cta-section p {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .how-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .how-card {
+    height: auto !important;
+    border-radius: 32px;
+    overflow: hidden;
+  }
+
+  .how-card--discover {
+    margin-bottom: 0;
+  }
+
+  .how-card h3 {
+    font-size: 28px;
+  }
+
+  .how-card p {
+    font-size: 16px;
+  }
+
+  .audience-row {
+    flex-direction: column;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .audience-row__copy {
+    gap: 24px;
+    text-align: center;
+  }
+
+  .audience-row__copy--right {
+    text-align: center;
+  }
+
+  .audience-row__copy h3 {
+    font-size: 32px;
+  }
+
+  .audience-row__copy strong {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  .persona-grid {
+    justify-content: center;
   }
 
   .persona-card {
+    width: calc(50% - 6px);
+    border-radius: 20px;
+    font-size: 16px;
+  }
+
+  .persona-card__image {
+    height: 100px;
+  }
+
+  .feature-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 40px;
+  }
+
+  .feature-card {
+    height: auto !important;
+    border-radius: 32px;
+    border: none;
+  }
+
+  .feature-card img {
+    height: auto;
     width: 100%;
+    position: relative;
+  }
+
+  .feature-card__overlay {
+    height: 120px !important;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%) !important;
+  }
+
+  .feature-card__content {
+    left: 20px !important;
+    right: 20px !important;
+    bottom: 20px !important;
+  }
+
+  .feature-card h3 {
+    font-size: 22px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .feature-card p {
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+  }
+
+  .feature-card__icons {
+    top: 20px;
+    right: 20px;
+  }
+
+  .feature-card__icon {
+    width: 48px;
+    height: 48px;
+    border-width: 3px;
+  }
+
+  .feature-card__icon:not(:first-child) {
+    margin-left: -16px;
+  }
+  
+  .cta-section {
+    padding-top: 80px;
+    padding-bottom: 80px;
+    gap: 40px;
+    text-align: center;
   }
 }
 /* ─── MODERN FOOTER ─── */
