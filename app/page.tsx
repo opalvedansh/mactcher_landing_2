@@ -241,16 +241,18 @@ export default function HomePage() {
   return (
     <main className="page-shell">
       {/* Fixed nav pill — always pinned top-right */}
-      <nav className="floating-nav" ref={navRef}>
-        {navItems.map((item) => (
-          <a href={item.href} key={item.label}>
-            {item.label}
+      <div className="nav-wrapper">
+        <nav className="floating-nav" ref={navRef}>
+          {navItems.map((item) => (
+            <a href={item.href} key={item.label}>
+              {item.label}
+            </a>
+          ))}
+          <a className="button button--dark button--nav" href="#cta">
+            Get the App
           </a>
-        ))}
-        <a className="button button--dark button--nav" href="#cta">
-          Get the App
-        </a>
-      </nav>
+        </nav>
+      </div>
 
       <section className="hero" id="top">
 

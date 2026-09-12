@@ -52,11 +52,23 @@ img {
 }
 
 /* ─── FLOATING NAV PILL (fixed, always visible) ─── */
-.floating-nav {
-  position: fixed;
+.nav-wrapper {
+  position: sticky;
   top: 20px;
-  right: max(56px, calc((100vw - 1920px) / 2 + 56px));
+  width: 100%;
+  min-width: 1920px;
+  margin: 0 auto;
+  height: 0;
   z-index: 100;
+  pointer-events: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding-right: 56px;
+}
+
+.floating-nav {
+  pointer-events: auto;
   display: flex;
   align-items: center;
   gap: 48px;
