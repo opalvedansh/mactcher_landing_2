@@ -579,43 +579,56 @@ export default function HomePage() {
         />
       </section>
 
-      <footer className="footer-modern">
+      <footer className="footer-modern" aria-labelledby="footer-title">
         <div className="footer-modern__top">
           <div className="footer-modern__brand">
             <div className="logo-mark">
               <img alt="Matchr" src={heroAssets.logo} />
-              <span style={{ color: '#fff' }}>Matchr</span>
+              <span id="footer-title" style={{ color: '#fff' }}>Matchr</span>
             </div>
             <p className="footer-modern__tagline">
               Where brands and creators create impact.
             </p>
+
+            <div className="footer-modern__invitation">
+              <span className="footer-modern__spark" aria-hidden="true">✦</span>
+              <div>
+                <strong>Your next great match is one swipe away.</strong>
+                <span>For creators and the brands that believe in them.</span>
+              </div>
+              <a className="footer-modern__cta" href="#cta">
+                Start matching
+                <span aria-hidden="true">↗</span>
+              </a>
+            </div>
           </div>
           
-          <div className="footer-modern__links">
-            <div className="footer-col">
+          <nav className="footer-modern__links" aria-label="Footer navigation">
+            <div className="footer-col footer-col--product">
               <h3>Product</h3>
               <a href="#features">Features</a>
               <a href="#how-it-works">How It Works</a>
               <a href="#cta">Pricing</a>
             </div>
-            <div className="footer-col">
+            <div className="footer-col footer-col--company">
               <h3>Company</h3>
               <a href="mailto:support@matcher.com">About</a>
               <a href="mailto:support@matcher.com">Contact</a>
               <a href="/rules.md">Privacy Policy</a>
               <a href="/rules.md">Terms of Service</a>
             </div>
-            <div className="footer-col">
+            <div className="footer-col footer-col--social">
               <h3>Social</h3>
               <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
               <a href="https://x.com" target="_blank" rel="noreferrer">Twitter</a>
               <a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a>
             </div>
-          </div>
+          </nav>
         </div>
         
         <div className="footer-modern__bottom">
           <p>&copy; {new Date().getFullYear()} Matchr. All rights reserved.</p>
+          <a className="footer-modern__back-to-top" href="#top">Back to top <span aria-hidden="true">↑</span></a>
         </div>
       </footer>
 
