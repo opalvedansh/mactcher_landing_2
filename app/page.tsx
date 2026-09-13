@@ -589,18 +589,6 @@ export default function HomePage() {
             <p className="footer-modern__tagline">
               Where brands and creators create impact.
             </p>
-
-            <div className="footer-modern__invitation">
-              <span className="footer-modern__spark" aria-hidden="true">✦</span>
-              <div>
-                <strong>Your next great match is one swipe away.</strong>
-                <span>For creators and the brands that believe in them.</span>
-              </div>
-              <a className="footer-modern__cta" href="#cta">
-                Start matching
-                <span aria-hidden="true">↗</span>
-              </a>
-            </div>
           </div>
           
           <nav className="footer-modern__links" aria-label="Footer navigation">
