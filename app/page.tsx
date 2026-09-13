@@ -295,8 +295,13 @@ export default function HomePage() {
             <div className="hero__phones" style={{ position: 'relative', display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end' }}>
               <img
                 alt="Hero App Layout"
-                src="/Gemini_Generated_Image_56h0uw56h0uw56h0.png"
-                className="hero__phones-image"
+                src="/download.png"
+                className="hero__phones-image hero__phones-image--desktop"
+              />
+              <img
+                alt="Hero App Layout"
+                src="/Firefly_RemoveBackground.png"
+                className="hero__phones-image hero__phones-image--mobile"
               />
             </div>
           </div>
