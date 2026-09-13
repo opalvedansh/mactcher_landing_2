@@ -204,6 +204,7 @@ function PhoneMockup({
 export default function HomePage() {
   const navRef = useRef<HTMLElement>(null);
   const [activePersona, setActivePersona] = useState<"influencer" | "brand">("influencer");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const personaCopy = {
     influencer: {
@@ -243,12 +244,54 @@ export default function HomePage() {
       {/* Fixed nav pill — always pinned top-right */}
       <div className="nav-wrapper">
         <nav className="floating-nav" ref={navRef}>
+          <a href="#top" className="nav-logo">
+            <img alt="Matchr" src={heroAssets.logo} />
+            <span>Matchr</span>
+          </a>
           {navItems.map((item) => (
             <a href={item.href} key={item.label}>
               {item.label}
             </a>
           ))}
           <a className="button button--dark button--nav" href="#cta">
+            Get the App
+          </a>
+          <button className="hamburger-btn" aria-label="Open menu" onClick={() => setIsMobileMenuOpen(true)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+        </nav>
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isMobileMenuOpen && (
+        <div className="mobile-sidebar-overlay" onClick={() => setIsMobileMenuOpen(false)} />
+      )}
+
+      {/* Mobile Sidebar */}
+      <div className={`mobile-sidebar ${isMobileMenuOpen ? 'mobile-sidebar--open' : ''}`}>
+        <div className="mobile-sidebar__header">
+          <div className="logo-mark">
+            <img alt="Matchr" src={heroAssets.logo} />
+            <span>Matchr</span>
+          </div>
+          <button className="mobile-sidebar__close" aria-label="Close menu" onClick={() => setIsMobileMenuOpen(false)}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <nav className="mobile-sidebar__nav">
+          {navItems.map((item) => (
+            <a href={item.href} key={item.label} onClick={() => setIsMobileMenuOpen(false)}>
+              {item.label}
+            </a>
+          ))}
+          <a className="mobile-sidebar__nav-cta" href="#cta" onClick={() => setIsMobileMenuOpen(false)}>
             Get the App
           </a>
         </nav>
@@ -307,10 +350,7 @@ export default function HomePage() {
           </div>
         </section>
 
-      <section className="trust-strip" aria-label="Trusted partners">
-        <div className="trust-strip__mark" />
-        <div className="trust-strip__mark" />
-      </section>
+
 
       <section className="section intro-section">
         <div className="intro-section__top">
@@ -578,6 +618,13 @@ export default function HomePage() {
           <p>&copy; {new Date().getFullYear()} Matchr. All rights reserved.</p>
         </div>
       </footer>
+
+      {/* Mobile-only sticky bottom CTA bar */}
+      <div className="mobile-cta-bar">
+        <a className="mobile-cta-bar__btn" href="#cta">
+          Get the App
+        </a>
+      </div>
     </main>
   );
 }

@@ -51,6 +51,14 @@ img {
   margin: 0 auto;
 }
 
+/* Mobile-only bottom CTA bar and hamburger menu — hidden on desktop */
+.mobile-cta-bar,
+.hamburger-btn,
+.mobile-sidebar,
+.mobile-sidebar-overlay {
+  display: none;
+}
+
 /* ─── FLOATING NAV PILL (fixed, always visible) ─── */
 .nav-wrapper {
   position: sticky;
@@ -83,6 +91,28 @@ img {
   font-size: 20px;
   font-weight: 700;
   transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #000;
+  margin-right: auto;
+}
+
+.nav-logo img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nav-logo span {
+  font-family: var(--font-mulish), sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .floating-nav.scrolled {
@@ -1360,12 +1390,16 @@ img {
   }
 
   .nav-wrapper {
+    position: fixed;
     min-width: 100%;
     width: 100%;
-    top: 12px;
-    padding-right: 16px;
-    padding-left: 16px;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 12px 16px;
+    height: auto;
     justify-content: stretch;
+    z-index: 200;
   }
 
   .floating-nav {
@@ -1377,26 +1411,157 @@ img {
     -webkit-backdrop-filter: blur(24px);
     border-radius: 40px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     min-height: 56px;
   }
 
-  .floating-nav a:not(.button) {
+  .floating-nav a:not(.button):not(.nav-logo) {
     display: none;
   }
 
-  .floating-nav::before {
-    content: "Matchr";
-    font-size: 18px;
-    font-weight: 800;
-    font-family: var(--font-mulish), sans-serif;
+  /* Hide the "Get the App" button inside the top navbar on mobile */
+  .floating-nav .button--nav {
+    display: none;
+  }
+
+  .hamburger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: #000;
+    padding: 8px;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  /* ── Mobile Sidebar ── */
+  .mobile-sidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(32px) saturate(1.5);
+    -webkit-backdrop-filter: blur(32px) saturate(1.5);
+    z-index: 300;
+    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 24px;
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.08);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+  }
+
+  .mobile-sidebar--open {
+    right: 0;
+  }
+
+  .mobile-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 299;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .mobile-sidebar__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+
+  .mobile-sidebar__header .logo-mark span {
+    font-size: 24px;
     color: #000;
   }
 
-  .floating-nav .button--nav {
-    width: 120px;
-    height: 44px;
-    font-size: 15px;
+  .mobile-sidebar__header .logo-mark img {
+    height: 32px;
+  }
+
+  .mobile-sidebar__close {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: -8px;
+  }
+
+  .mobile-sidebar__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .mobile-sidebar__nav a {
+    font-size: 20px;
+    font-weight: 600;
+    font-family: var(--font-mulish), sans-serif;
+    color: #000;
+    text-decoration: none;
+  }
+
+  .mobile-sidebar__nav-cta {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    background: var(--accent);
+    color: #fff !important;
+    border-radius: 24px;
+    font-size: 16px !important;
+  }
+
+  /* ── Sticky bottom CTA bar (mobile only) ── */
+  .mobile-cta-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 6px 16px 12px;
+    z-index: 200;
+  }
+
+  .mobile-cta-bar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 160px;
+    height: 36px;
+    background: #000;
+    color: #fff;
+    border-radius: 20px;
+    font-family: var(--font-mulish), sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+
+  .mobile-cta-bar__btn:active {
+    background: #222;
+    transform: scale(0.97);
+  }
+
+  /* Add bottom padding so content isn't hidden behind the sticky CTA bar */
+  .page-shell {
+    padding-bottom: 54px;
   }
 
   .hero {
@@ -1477,12 +1642,12 @@ img {
 
   .hero__phones-image--mobile {
     display: block;
-    width: 180%;
-    max-width: 180%;
+    width: 250%;
+    max-width: 250%;
     height: auto;
     transform: none;
     mix-blend-mode: multiply;
-    margin: 0 -40%;
+    margin: 0 -75%;
   }
 
   .trust-strip {
@@ -1714,11 +1879,44 @@ img {
 
 /* ─── MODERN FOOTER ─── */
 .footer-modern {
+  position: relative;
   background-color: #050505;
   color: #fff;
-  padding: 80px 5% 40px;
+  padding: 100px 5% 60px;
   font-family: var(--font-outfit), sans-serif;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+}
+
+.footer-modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 1000px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.4), transparent);
+}
+
+.footer-modern::after {
+  content: '';
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse at center, rgba(255, 107, 53, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.footer-modern__top,
+.footer-modern__bottom {
+  position: relative;
+  z-index: 1;
 }
 
 .footer-modern__top {
@@ -1746,7 +1944,7 @@ img {
 .footer-modern__tagline {
   color: #a0a0a0;
   font-size: 18px;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
 }
 
@@ -1761,29 +1959,44 @@ img {
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   margin-bottom: 24px;
 }
 
 .footer-col a {
-  display: block;
-  color: #a0a0a0;
+  position: relative;
+  display: inline-block;
+  color: #8a8a8a;
   font-size: 16px;
   margin-bottom: 16px;
   text-decoration: none;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition: color 0.3s ease;
+}
+
+.footer-col a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 1px;
+  bottom: -2px;
+  left: 0;
+  background: #ff6b35;
+  transition: width 0.3s ease;
 }
 
 .footer-col a:hover {
-  color: #ff6b35;
-  transform: translateX(2px);
+  color: #fff;
+}
+
+.footer-col a:hover::after {
+  width: 100%;
 }
 
 .footer-modern__bottom {
   max-width: 1400px;
   margin: 80px auto 0;
   padding-top: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1792,13 +2005,37 @@ img {
 }
 
 @media (max-width: 768px) {
+  .footer-modern {
+    padding: 60px 20px 40px;
+  }
+
   .footer-modern__top {
     flex-direction: column;
-    gap: 40px;
+    align-items: center;
+    gap: 48px;
+  }
+
+  .footer-modern__brand {
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .footer-modern__brand .logo-mark {
+    justify-content: center;
   }
 
   .footer-modern__links {
     gap: 40px;
     flex-direction: column;
+    width: 100%;
+    text-align: center;
+  }
+
+  .footer-modern__bottom {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+    margin-top: 48px;
+    padding-top: 24px;
   }
 }
