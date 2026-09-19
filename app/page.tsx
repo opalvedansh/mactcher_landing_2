@@ -600,7 +600,7 @@ export default function HomePage() {
             </div>
             <div className="footer-col footer-col--company">
               <h3>Company</h3>
-              <a href="mailto:support@matcher.com">About</a>
+              <a href="/support">Support</a>
               <a href="mailto:support@matcher.com">Contact</a>
               <a href="/rules.md">Privacy Policy</a>
               <a href="/rules.md">Terms of Service</a>
