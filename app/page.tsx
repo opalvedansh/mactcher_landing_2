@@ -602,7 +602,7 @@ export default function HomePage() {
               <h3>Company</h3>
               <a href="/support">Support</a>
               <a href="mailto:support@matcher.com">Contact</a>
-              <a href="/rules.md">Privacy Policy</a>
+              <a href="/privacy">Privacy Policy</a>
               <a href="/rules.md">Terms of Service</a>
             </div>
             <div className="footer-col footer-col--social">

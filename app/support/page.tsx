@@ -17,8 +17,8 @@ const channels = [
     description:
       "Best for account issues, billing questions, and anything that needs a paper trail.",
     meta: "Replies within 24 hours",
-    action: "support@matchr.com",
-    href: "mailto:support@matchr.com",
+    action: "support@matcher.com",
+    href: "mailto:support@matcher.com",
     icon: (
       <>
         <rect x="3" y="5" width="18" height="14" rx="3" />
@@ -45,8 +45,8 @@ const channels = [
     description:
       "Flag fake profiles, payment disputes, harassment, or anything that breaks our community rules.",
     meta: "Reviewed within 48 hours",
-    action: "trust@matchr.com",
-    href: "mailto:trust@matchr.com",
+    action: "trust@matcher.com",
+    href: "mailto:trust@matcher.com",
     icon: (
       <>
         <path d="M12 3.5 20.5 19h-17L12 3.5Z" />
@@ -139,7 +139,7 @@ const faqs: Faq[] = [
     category: "Account & Billing",
     question: "I was charged incorrectly. What should I do?",
     answer:
-      "Email support@matchr.com with the transaction date and amount. Billing issues are prioritised, and confirmed incorrect charges are refunded to the original payment method within 5–7 business days.",
+      "Email support@matcher.com with the transaction date and amount. Billing issues are prioritised, and confirmed incorrect charges are refunded to the original payment method within 5–7 business days.",
   },
   {
     category: "Account & Billing",
@@ -157,7 +157,7 @@ const faqs: Faq[] = [
     category: "Safety & Trust",
     question: "Someone is behaving inappropriately. How do I report them?",
     answer:
-      "Open the chat or profile, tap the three-dot menu, and choose Report or Block. Reports go to our trust team and are reviewed within 48 hours. You can also email trust@matchr.com with screenshots.",
+      "Open the chat or profile, tap the three-dot menu, and choose Report or Block. Reports go to our trust team and are reviewed within 48 hours. You can also email trust@matcher.com with screenshots.",
   },
   {
     category: "Safety & Trust",
@@ -252,7 +252,7 @@ export default function SupportPage() {
       setForm({ name: "", email: "", topic: topics[0], message: "" });
     } catch {
       setErrorMessage(
-        "We couldn't reach the server. Email support@matchr.com and we'll pick it up there.",
+        "We couldn't reach the server. Email support@matcher.com and we'll pick it up there.",
       );
       setStatus("error");
     }
@@ -656,8 +656,8 @@ export default function SupportPage() {
             <div className="footer-col footer-col--company">
               <h3>Company</h3>
               <a href="/support">Support</a>
-              <a href="mailto:support@matchr.com">Contact</a>
-              <a href="/rules.md">Privacy Policy</a>
+              <a href="mailto:support@matcher.com">Contact</a>
+              <a href="/privacy">Privacy Policy</a>
               <a href="/rules.md">Terms of Service</a>
             </div>
             <div className="footer-col footer-col--social">
