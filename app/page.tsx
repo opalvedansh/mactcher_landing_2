@@ -253,8 +253,8 @@ export default function HomePage() {
               {item.label}
             </a>
           ))}
-          <a className="button button--dark button--nav" href="#cta">
-            Get the App
+          <a className="button button--dark button--nav" href="/app">
+            Open Web App
           </a>
           <button className="hamburger-btn" aria-label="Open menu" onClick={() => setIsMobileMenuOpen(true)}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -291,8 +291,8 @@ export default function HomePage() {
               {item.label}
             </a>
           ))}
-          <a className="mobile-sidebar__nav-cta" href="#cta" onClick={() => setIsMobileMenuOpen(false)}>
-            Get the App
+          <a className="mobile-sidebar__nav-cta" href="/app" onClick={() => setIsMobileMenuOpen(false)}>
+            Open Web App
           </a>
         </nav>
       </div>
@@ -568,8 +568,8 @@ export default function HomePage() {
             creator looking for your next big collaboration, Matchr helps
             meaningful partnerships start with a single swipe.
           </p>
-          <a className="button button--primary" href="mailto:support@matcher.com">
-            Get the App
+          <a className="button button--primary" href="/app">
+            Open Web App
           </a>
         </div>
         <img
@@ -622,8 +622,8 @@ export default function HomePage() {
 
       {/* Mobile-only sticky bottom CTA bar */}
       <div className="mobile-cta-bar">
-        <a className="mobile-cta-bar__btn" href="#cta">
-          Get the App
+        <a className="mobile-cta-bar__btn" href="/app">
+          Open Web App
         </a>
       </div>
     </main>

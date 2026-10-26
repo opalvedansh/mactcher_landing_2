@@ -4,3 +4,18 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+# The Matchr web app (Expo web build of the mymatcher repo) is its own Netlify
+# site; it is served here at /app so it shares this domain. Update the host if
+# that site is named differently.
+[[redirects]]
+  from = "/app"
+  to = "https://matchr-web.netlify.app/app/"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/app/*"
+  to = "https://matchr-web.netlify.app/app/:splat"
+  status = 200
+  force = true
