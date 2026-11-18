@@ -1,0 +1,444 @@
+import api from './client';
+import type { MediaType, StoryLayout, Track } from './story';
+import type {
+  ApiUser,
+  AnyProfile,
+  FeedResponse,
+  SwipeDirection,
+  SwipeResponse,
+  SwipeRecord,
+  MatchRecord,
+  MatchListResponse,
+  MatchStats,
+  ProfileUpdate,
+  Responsiveness,
+  BrandRating,
+  CreatorReviews,
+  CreatorReviewInput,
+  VerificationRequestResult,
+  UserRole,
+  ChatResponse,
+  ChatAttachmentKind,
+  ChatUploadTarget,
+  MuteDuration,
+  NotificationsResponse,
+  Post,
+} from './types';
+
+// ─── Upload ───────────────────────────────────────────────────────
+
+/** Longest side, in pixels, of a photo as uploaded. Plenty for any screen. */
+const MAX_PHOTO_EDGE = 1440;
+
+export async function uploadImage(file: Blob): Promise<string> {
+  return uploadFile(await shrinkPhoto(file), 'image/jpeg');
+}
+
+/**
+ * Scales a photo to 1440px and recompresses it, so a multi-MB camera photo
+ * uploads as a few hundred KB. PNGs stay PNG so a logo keeps its
+ * transparency. Any failure uploads the original.
+ */
+export async function shrinkPhoto(file: Blob): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const isPng = file.type === 'image/png';
+    const longest = Math.max(bitmap.width, bitmap.height);
+    if (longest <= MAX_PHOTO_EDGE && isPng) return file;
+    const k = Math.min(1, MAX_PHOTO_EDGE / longest);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(bitmap.width * k);
+    canvas.height = Math.round(bitmap.height * k);
+    canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+    const out = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, isPng ? 'image/png' : 'image/jpeg', 0.75),
+    );
+    return out ?? file;
+  } catch (err) {
+    console.warn('[upload] could not shrink photo, uploading the original', err);
+    return file;
+  }
+}
+
+/** A story's video (mp4/mov), which only story uploads accept. */
+export function uploadStoryVideo(file: Blob): Promise<string> {
+  return uploadFile(file, 'video/mp4', 'story');
+}
+
+async function uploadFile(blob: Blob, fallbackType: string, purpose?: 'story'): Promise<string> {
+  const contentType = blob.type && blob.type !== 'application/octet-stream' ? blob.type : fallbackType;
+  const ext = contentType.split('/')[1] || 'jpg';
+  const data = await api.post<{ signedUrl: string; publicUrl: string }>('/api/upload/presigned-url', {
+    filename: `upload.${ext}`,
+    contentType,
+    purpose,
+  });
+  const res = await fetch(data.signedUrl, { method: 'PUT', headers: { 'Content-Type': contentType }, body: blob });
+  if (!res.ok) throw new Error(`Upload failed (HTTP ${res.status})`);
+  return data.publicUrl;
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────
+
+/**
+ * Syncs the Firebase-authenticated user into PostgreSQL.
+ * Call this immediately after sign-up and after onboarding role selection.
+ */
+export function syncUser(role?: UserRole) {
+  return api.post<{ user: ApiUser }>('/api/auth/sync', role ? { role } : {});
+}
+
+export function getMe() {
+  return api.get<ApiUser>('/api/auth/me');
+}
+
+// ─── Profile ──────────────────────────────────────────────────────
+
+export function getMyProfile() {
+  return api.get<AnyProfile>('/api/profiles/me');
+}
+
+export function verifyFace(base64Image: string) {
+  return api.post<{ success: boolean; message: string; similarity: number }>('/api/profiles/verify-face', { base64Image });
+}
+
+export function updateMyProfile(data: ProfileUpdate) {
+  return api.put<AnyProfile>('/api/profiles/me', data);
+}
+
+/** How quickly you reply to matches, worked out from your own chat history. */
+export function getMyResponsiveness() {
+  return api.get<Responsiveness>('/api/profiles/me/responsiveness');
+}
+
+/** Asks an admin to verify this brand as a business. Does not grant the badge. */
+export function requestVerification(business_name: string, reg_number: string) {
+  return api.post<VerificationRequestResult>('/api/profiles/me/verification', { business_name, reg_number });
+}
+
+export function getProfileById(userId: string) {
+  // Someone else's profile is opened repeatedly while swiping and from chat,
+  // and changes rarely. The server already caches this route for 300s, so a
+  // short client TTL only removes a round-trip that was returning the same
+  // body anyway. Any mutation from this device clears it (see api/client).
+  return api.get<AnyProfile>(`/api/profiles/${userId}`, { ttlMs: 60_000 });
+}
+
+export function syncInstagram(instagram_handle: string) {
+  return api.post<AnyProfile>('/api/profiles/sync-instagram', { instagram_handle });
+}
+
+// ─── Feed ─────────────────────────────────────────────────────────
+
+/**
+ * Returns the next batch of swipe candidates for the current user.
+ * @param limit  How many to load (max 50)
+ * @param offset Pagination offset
+ */
+export function getFeed(limit = 10, cursorScore?: number, cursorId?: string) {
+  let url = `/api/feed?limit=${limit}`;
+  if (cursorScore !== undefined && cursorScore !== null) url += `&cursor_score=${cursorScore}`;
+  if (cursorId) url += `&cursor_id=${cursorId}`;
+  return api.get<FeedResponse>(url);
+}
+
+// ─── Swipes ───────────────────────────────────────────────────────
+
+/**
+ * Records a swipe. Returns whether a mutual match was created.
+ */
+export function recordSwipe(swiped_id: string, direction: SwipeDirection) {
+  // A swipe changes the feed, swipes and matches, never a profile or stories,
+  // so those caches stay warm while the user swipes through the deck.
+  return api.post<SwipeResponse>('/api/swipes', { swiped_id, direction }, {
+    invalidates: ['/api/feed', '/api/swipes', '/api/matches'],
+  });
+}
+
+export function getMySwipes() {
+  return api.get<SwipeRecord[]>('/api/swipes');
+}
+
+export function getLikesReceived() {
+  return api.get('/api/swipes/received');
+}
+
+// ─── Matches ──────────────────────────────────────────────────────
+
+export function getMatches() {
+  return api.get<MatchListResponse>('/api/matches');
+}
+
+/** Totals across every match, so counts stay right past the 50-row page getMatches returns. */
+export function getMatchStats() {
+  return api.get<MatchStats>('/api/matches/stats');
+}
+
+export function getMatchById(matchId: string) {
+  return api.get<MatchRecord>(`/api/matches/${matchId}`);
+}
+
+export function archiveMatch(matchId: string) {
+  return api.delete<{ message: string }>(`/api/matches/${matchId}`);
+}
+
+// ─── Brand ratings ────────────────────────────────────────────────
+
+export function getBrandRating(brandId: string) {
+  return api.get<BrandRating>(`/api/ratings/${encodeURIComponent(brandId)}`);
+}
+
+/** Only a creator who matched with the brand may rate it; 1 to 5. */
+export function rateBrand(brandId: string, score: number) {
+  return api.put<BrandRating>(`/api/ratings/${encodeURIComponent(brandId)}`, { score });
+}
+
+export function removeBrandRating(brandId: string) {
+  return api.delete<{ removed: number }>(`/api/ratings/${encodeURIComponent(brandId)}`);
+}
+
+// ─── Reviews of a creator ─────────────────────────────────────────
+
+export function getCreatorReviews(creatorId: string) {
+  return api.get<CreatorReviews>(`/api/reviews/${encodeURIComponent(creatorId)}`);
+}
+
+/** Only a brand that matched with the creator may review them; writing again edits it. */
+export function reviewCreator(creatorId: string, review: CreatorReviewInput) {
+  return api.put<CreatorReviews>(`/api/reviews/${encodeURIComponent(creatorId)}`, review);
+}
+
+export function removeCreatorReview(creatorId: string) {
+  return api.delete<CreatorReviews>(`/api/reviews/${encodeURIComponent(creatorId)}`);
+}
+
+// ─── Chat ─────────────────────────────────────────────────────────
+
+export function getMessages(matchId: string, limit = 50, cursor?: string) {
+  const url = cursor
+    ? `/api/chat/${matchId}/messages?limit=${limit}&cursor=${encodeURIComponent(cursor)}`
+    : `/api/chat/${matchId}/messages?limit=${limit}`;
+  return api.get<ChatResponse>(url);
+}
+
+/** A one-time signed URL to PUT a chat attachment to, before sending it. */
+export function requestChatUpload(
+  matchId: string,
+  file: { kind: ChatAttachmentKind; mime: string; size: number; name?: string },
+) {
+  return api.post<ChatUploadTarget>(`/api/chat/${matchId}/uploads`, file);
+}
+
+/** "Clear chat": hides everything so far, for me only. */
+export function clearChat(matchId: string) {
+  return api.post<{ cleared_at: string }>(`/api/chat/${matchId}/clear`, {});
+}
+
+/** Mutes push notifications for one conversation; null unmutes. */
+export function muteChat(matchId: string, duration: MuteDuration | null) {
+  return api.put<{ muted_until: string | null }>(`/api/chat/${matchId}/mute`, { duration });
+}
+
+// ─── Stories ──────────────────────────────────────────────────────
+
+/**
+ * `layout` is what the editor placed over the photo (text, stickers, drawing,
+ * filter, position). A text-only story has no photo, so `media_url` is null.
+ * `audience: 'close_friends'` shows it only to your Close Friends list.
+ */
+export function uploadStory(story: {
+  media_url: string | null;
+  layout?: StoryLayout;
+  media_type?: MediaType;
+  duration_ms?: number | null;
+  audience?: 'all' | 'close_friends';
+}) {
+  return api.post('/api/stories', story);
+}
+
+/** Someone who can see your stories (a match), for Close Friends and @mentions. */
+export type StoryAudienceMember = { id: string; role: string; name: string; avatar: string | null; close_friend: boolean };
+
+export function getStoryAudience() {
+  return api.get<StoryAudienceMember[]>('/api/stories/audience', { ttlMs: 30_000 });
+}
+
+/** Replaces your Close Friends list. */
+export function setCloseFriends(ids: string[]) {
+  return api.put<{ ids: string[] }>('/api/stories/close-friends', { ids });
+}
+
+/** Songs with 30-second previews; an empty query lists what's popular. */
+export function searchStoryMusic(q: string) {
+  return api.get<Track[]>(`/api/stories/music?q=${encodeURIComponent(q)}`, { ttlMs: 5 * 60_000 });
+}
+
+/**
+ * Both home screens fetch this on every mount, and stories only change when
+ * someone posts one. Posting from this device goes through api.post, which
+ * clears the cache, so the author still sees their own story immediately.
+ * Pull-to-refresh passes `force` so the gesture always hits the network.
+ */
+export function getFeedStories(force = false) {
+  return api.get('/api/stories/feed', { ttlMs: 30_000, force });
+}
+
+export function recordStoryView(storyId: string) {
+  return api.post(`/api/stories/${storyId}/view`, {});
+}
+
+export function getStoryViewers(storyId: string) {
+  return api.get<any[]>(`/api/stories/${storyId}/viewers`);
+}
+
+// ─── Trust & safety ───────────────────────────────────────────────
+
+export type ReportTargetType = 'user' | 'post' | 'story' | 'message' | 'review';
+export type ReportReason = 'spam' | 'inappropriate' | 'harassment' | 'fake_profile' | 'other';
+
+export function blockUser(userId: string) {
+  return api.post('/api/blocks', { user_id: userId });
+}
+
+export function unblockUser(userId: string) {
+  return api.delete(`/api/blocks/${encodeURIComponent(userId)}`);
+}
+
+export function reportContent(targetType: ReportTargetType, targetId: string, reason: ReportReason, details?: string) {
+  return api.post('/api/reports', { target_type: targetType, target_id: targetId, reason, details });
+}
+
+export function deleteMyAccount() {
+  return api.delete<{ deleted: boolean }>('/api/account');
+}
+
+// ─── Notifications ────────────────────────────────────────────────
+
+export function getNotifications(limit = 30, before?: string) {
+  const url = before
+    ? `/api/notifications?limit=${limit}&before=${encodeURIComponent(before)}`
+    : `/api/notifications?limit=${limit}`;
+  return api.get<NotificationsResponse>(url);
+}
+
+export function getUnreadNotificationCount() {
+  return api.get<{ count: number }>('/api/notifications/unread-count');
+}
+
+/** Marks the given notifications read, or all of them when `ids` is omitted. */
+export function markNotificationsRead(ids?: string[]) {
+  return api.post<{ updated: number }>('/api/notifications/read', ids ? { ids } : {});
+}
+
+// ─── Maps ─────────────────────────────────────────────────────────
+
+export function getMapAutocomplete(input: string, types: string = '(cities)') {
+  return api.get<any>(`/api/maps/autocomplete?input=${encodeURIComponent(input)}&types=${encodeURIComponent(types)}`);
+}
+
+export function getMapGeocode(placeId: string) {
+  return api.get<any>(`/api/maps/geocode?place_id=${encodeURIComponent(placeId)}`);
+}
+
+// ─── Posts: feed, comments and shares ─────────────────────────────
+
+export interface PostComment {
+  id: string;
+  post_id: string;
+  user_id: string;
+  parent_id: string | null;
+  body: string;
+  likes_count: number;
+  replies_count: number;
+  edited_at: string | null;
+  created_at: string;
+  author_name?: string | null;
+  author_avatar?: string | null;
+  author_verified?: boolean;
+  liked_by_me?: boolean;
+}
+
+/**
+ * One page of the ranked feed. Pass the previous page's `next_cursor` to
+ * continue; omit it to start over, which also rebuilds the ranking and is
+ * what pull-to-refresh should do.
+ */
+export function getPostFeed(limit = 20, cursor?: string | null) {
+  const url = cursor
+    ? `/api/posts/feed?limit=${limit}&cursor=${encodeURIComponent(cursor)}`
+    : `/api/posts/feed?limit=${limit}`;
+  return api.get<{ posts: Post[]; next_cursor: string | null }>(url);
+}
+
+export function getPost(postId: string) {
+  return api.get<{ post: Post }>(`/api/posts/${postId}`);
+}
+
+export function getPostComments(postId: string, limit = 20, before?: string | null) {
+  const url = before
+    ? `/api/posts/${postId}/comments?limit=${limit}&before=${encodeURIComponent(before)}`
+    : `/api/posts/${postId}/comments?limit=${limit}`;
+  return api.get<{ comments: PostComment[]; next_before: string | null }>(url);
+}
+
+export function getCommentReplies(postId: string, commentId: string, limit = 20, after?: string | null) {
+  const url = after
+    ? `/api/posts/${postId}/comments/${commentId}/replies?limit=${limit}&after=${encodeURIComponent(after)}`
+    : `/api/posts/${postId}/comments/${commentId}/replies?limit=${limit}`;
+  return api.get<{ replies: PostComment[]; next_after: string | null }>(url);
+}
+
+export function createPostComment(postId: string, body: string, parentId?: string | null) {
+  return api.post<{ comment: PostComment }>(`/api/posts/${postId}/comments`, {
+    body,
+    parent_id: parentId ?? null,
+  });
+}
+
+export function deletePostComment(postId: string, commentId: string) {
+  return api.delete<{ success: boolean }>(`/api/posts/${postId}/comments/${commentId}`);
+}
+
+export function likePostComment(postId: string, commentId: string, liked: boolean) {
+  return api.post<{ liked: boolean; likes_count: number }>(
+    `/api/posts/${postId}/comments/${commentId}/like`,
+    { liked }
+  );
+}
+
+/** Records that a share sheet was opened. Best effort: never block the share. */
+export function recordPostShare(postId: string, channel: 'app' | 'link' | 'web' = 'app') {
+  return api.post<{ shares_count: number }>(`/api/posts/${postId}/share`, { channel });
+}
+
+// ─── Calls the mobile app makes outside its api/index.ts ──────────
+
+export function createPost(image_url: string, caption?: string) {
+  return api.post<{ post: Post }>('/api/posts', { image_url, caption });
+}
+
+export function getMyPosts() {
+  return api.get<{ posts: Post[] }>('/api/posts/my');
+}
+
+export function deletePost(postId: string) {
+  return api.delete(`/api/posts/${postId}`);
+}
+
+export function searchInstagram(q: string) {
+  return api.get<any>(`/api/profiles/search-instagram?q=${encodeURIComponent(q)}`);
+}
+
+
+export function getOnboardingDraft() {
+  return api.get<Record<string, any>>('/api/auth/onboarding');
+}
+
+export function saveOnboardingDraft(data: Record<string, any>) {
+  return api.put<Record<string, any>>('/api/auth/onboarding', data, { invalidates: ['/api/auth/onboarding'] });
+}
+
+export function getBlocks() {
+  return api.get<any>('/api/blocks');
+}

@@ -1,21 +1,30 @@
 [build]
-  command = "npm run build"
+  # The web portal under /app needs the Supabase keys at build time (they are
+  # inlined into the bundle); fail the build rather than ship placeholders.
+  command = '[ -n "$NEXT_PUBLIC_SUPABASE_URL" ] && [ -n "$NEXT_PUBLIC_SUPABASE_ANON_KEY" ] || { echo "Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in the Netlify site env"; exit 1; }; npm run build'
   publish = ".next"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# The Matchr web app (Expo web build of the mymatcher repo) is its own Netlify
-# site; it is served here at /app so it shares this domain. Update the host if
-# that site is named differently.
-[[redirects]]
-  from = "/app"
-  to = "https://matchr-web.netlify.app/app/"
-  status = 200
-  force = true
+# The Matchr web portal (app/(portal)/app) is part of this site. Browser-side
+# hardening for it: no framing (clickjacking a "Delete account" click), and the
+# page may only talk to the API and Supabase. Next injects inline bootstrap
+# scripts, hence script-src 'unsafe-inline'.
+[[headers]]
+  for = "/app/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: data: https://api.mymatchr.in wss://api.mymatchr.in https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(self), geolocation=(self), payment=()"
 
-[[redirects]]
-  from = "/app/*"
-  to = "https://matchr-web.netlify.app/app/:splat"
-  status = 200
-  force = true
+[[headers]]
+  for = "/app"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; media-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' blob: data: https://api.mymatchr.in wss://api.mymatchr.in https://*.supabase.co wss://*.supabase.co; worker-src 'self' blob:; manifest-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(self), geolocation=(self), payment=()"
