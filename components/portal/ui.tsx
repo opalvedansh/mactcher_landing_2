@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, type ReactNode } from 'react';
-import { Icon } from './icons';
+import { Icon, type IconName } from './icons';
 
 export function Spinner({ screen, small }: { screen?: boolean; small?: boolean }) {
   const s = <div className={small ? 'spinner spinner--sm' : 'spinner'} role="status" aria-label="Loading" />;
@@ -13,6 +13,20 @@ export function Avatar({ src, name, size = 44 }: { src?: string | null; name?: s
   return (
     <div className="avatar avatar--fallback" style={{ width: size, height: size, fontSize: size * 0.4 }} aria-hidden="true">
       {(name || '?').trim().charAt(0).toUpperCase()}
+    </div>
+  );
+}
+
+/** The app's empty / error state: icon in a soft circle, a title, a line, an optional action. */
+export function EmptyState({ icon, title, body, action, tone = 'accent' }: {
+  icon: IconName; title: string; body?: string; action?: ReactNode; tone?: 'accent' | 'muted';
+}) {
+  return (
+    <div className="state" role="status">
+      <span className={`state__icon state__icon--${tone}`}><Icon name={icon} size={26} width={1.8} /></span>
+      <h2 className="state__title">{title}</h2>
+      {body && <p className="state__body">{body}</p>}
+      {action && <div className="state__action">{action}</div>}
     </div>
   );
 }

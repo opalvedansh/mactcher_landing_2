@@ -10,7 +10,7 @@ import type { Post } from '@/lib/matchr/types';
 import { PostCard } from '@/components/portal/posts/PostCard';
 import { StoryViewer, type StoryGroup } from '@/components/portal/story/StoryViewer';
 import { NotificationBell } from '@/components/portal/NotificationBell';
-import { Avatar, Spinner, useToast } from '@/components/portal/ui';
+import { Avatar, EmptyState, Spinner, useToast } from '@/components/portal/ui';
 import { Icon } from '@/components/portal/icons';
 import { showAlert } from '@/components/portal/dialogs';
 
@@ -114,12 +114,15 @@ export default function HomePage() {
       </div>
 
       {error ? (
-        <div className="empty"><p>Couldn&apos;t load the feed.</p><button className="btn btn--outline" onClick={loadFeed}>Try again</button></div>
-      ) : !posts ? <div className="center" style={{ minHeight: 300 }}><Spinner /></div> : posts.length === 0 ? (
-        <div className="empty stack" style={{ alignItems: 'center' }}>
-          <p>No posts yet.</p>
-          <Link href="/app/create-post" className="btn btn--primary">Share your first post</Link>
+        <EmptyState icon="cloudOff" tone="muted" title="Couldn't load the feed" body="Check your connection and try again."
+          action={<button className="btn btn--outline" onClick={loadFeed}>Try again</button>} />
+      ) : !posts ? (
+        <div className="feed" aria-busy="true" aria-label="Loading posts">
+          {[0, 1].map((i) => <div key={i} className="post"><div className="post__media post__media--skeleton"><span className="skel skel--avatar" /><span className="skel" style={{ width: 120 }} /></div></div>)}
         </div>
+      ) : posts.length === 0 ? (
+        <EmptyState icon="image" title="No posts yet" body="Posts from creators and brands will show up here."
+          action={<Link href="/app/create-post" className="btn btn--outline">Create post</Link>} />
       ) : (
         <div className="feed">
           {posts.map((p) => (

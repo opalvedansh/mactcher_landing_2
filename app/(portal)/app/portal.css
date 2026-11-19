@@ -150,6 +150,13 @@ p { margin: 0; }
    below the fold; the page narrows to it so the title lines up with it. */
 .page--deck { --deck-w: min(420px, calc((100dvh - 200px) * 3 / 4.4)); max-width: calc(var(--deck-w) + 40px); }
 
+/* Match title block; the phone rules below restyle it. */
+.deck-title { margin-bottom: 16px; }
+.deck-title h1 { font-size: 28px; font-weight: 800; }
+.deck-title p { margin-top: 3px; color: var(--muted); font-size: 14px; }
+.m-header { display: none; }
+.deck-hint { text-align: center; margin-top: 12px; font-size: 13px; color: var(--muted); }
+
 /* Phones: the app's floating white pill tab bar (mymatcher src/theme/tabBar.ts). */
 @media (max-width: 767px) {
   :root { --tab-h: 84px; } /* 60px pill + 12px gap below + 12px clear above */
@@ -324,11 +331,6 @@ p { margin: 0; }
 .deck-actions__pass { width: 56px; height: 56px; background: #f4f4f4; color: #111; }
 .deck-actions__like { width: 64px; height: 64px; background: var(--accent); color: #fff; }
 
-.deck-title { margin-bottom: 16px; }
-.deck-title h1 { font-size: 28px; font-weight: 800; }
-.deck-title p { margin-top: 3px; color: var(--muted); font-size: 14px; }
-.m-header { display: none; }
-.deck-hint { text-align: center; margin-top: 12px; font-size: 13px; color: var(--muted); }
 kbd {
   display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px;
   border-radius: 6px; background: var(--surface); font: inherit; font-size: 12px; text-align: center;
@@ -351,7 +353,6 @@ kbd {
 /* ─── Chat ───────────────────────────────────────────────────── */
 
 .chat { display: flex; flex-direction: column; height: 100dvh; }
-@media (max-width: 767px) { .chat { height: calc(100dvh - var(--tab-h) - env(safe-area-inset-bottom)); } }
 .chat__head { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--border); }
 .chat__body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 4px; }
 .chat__foot { border-top: 1px solid var(--border); padding: 10px 12px; }
@@ -374,6 +375,111 @@ kbd {
   border: 1px solid var(--border); background: var(--surface); outline: none;
 }
 .typing { font-size: 13px; color: var(--accent); }
+/* Empty / error states and loading placeholders, as in the app. */
+.state { display: flex; flex-direction: column; align-items: center; padding: 72px 40px 40px; text-align: center; }
+.state__icon { display: grid; place-items: center; width: 60px; height: 60px; margin-bottom: 16px; border-radius: 50%; background: #1e1e1e; }
+.state__icon--accent { color: var(--accent); }
+.state__icon--muted { color: #bdbdbd; }
+.state__title { font-size: 18px; font-weight: 700; }
+.state__body { max-width: 300px; margin-top: 6px; font-size: 14px; line-height: 20px; color: #9a9a9a; }
+.state__action { margin-top: 20px; }
+.state__action .btn--outline { border-color: rgba(255, 255, 255, 0.3); border-radius: 12px; padding: 11px 24px; }
+.skel { display: block; height: 14px; border-radius: 7px; background: #1e1e1e; }
+.skel--avatar { flex: none; width: 56px; height: 56px; border-radius: 50%; }
+@keyframes skel-pulse { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: no-preference) { .skel { animation: skel-pulse 1.4s ease-in-out infinite; } }
+.post__media--skeleton { display: flex; align-items: flex-start; gap: 12px; padding: 20px; background: #1a1a1a; }
+.post__media--skeleton .skel--avatar { width: 44px; height: 44px; }
+.post__media--skeleton .skel { margin-top: 15px; }
+
+/* Tab screen header: big title with the bell, as on the app's Likes and Chat tabs. */
+.screen-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.screen-head h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
+
+/* Chat list, as in the app (mymatcher ChatScreen). */
+.inbox { padding: 24px 12px 16px; }
+.inbox .screen-head { padding: 0 12px; }
+.search-pill {
+  display: flex; align-items: center; gap: 10px; height: 46px; margin: 0 12px 12px; padding: 0 16px;
+  border-radius: 23px; background: #1e1e1e; border: 1px solid rgba(255, 255, 255, 0.1); color: #8a8a8a;
+}
+.search-pill:focus-within { border-color: rgba(255, 107, 43, 0.6); }
+.search-pill input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; color: #fff; font-size: 16px; outline: none; }
+.search-pill input::placeholder { color: #8a8a8a; }
+.search-pill input::-webkit-search-cancel-button { display: none; }
+.search-pill__clear { display: grid; place-items: center; width: 20px; height: 20px; border: 0; border-radius: 50%; background: #8a8a8a; color: #1e1e1e; cursor: pointer; }
+.inbox__none { margin-top: 40px; text-align: center; font-size: 14px; color: #8a8a8a; }
+.chat-row { position: relative; display: flex; align-items: center; padding: 12px; border-radius: 16px; }
+.chat-row:hover, .chat-row[aria-current="true"] { background: rgba(255, 255, 255, 0.05); }
+.chat-row:active { background: rgba(255, 255, 255, 0.08); }
+.chat-row + .chat-row::before { content: ''; position: absolute; top: 0; left: 82px; right: 12px; height: 1px; background: rgba(255, 255, 255, 0.08); }
+.chat-row:hover::before, .chat-row:hover + .chat-row::before { display: none; }
+.chat-row__avatar { position: relative; flex: none; display: flex; }
+.chat-row__avatar--new::after { content: ''; position: absolute; inset: -3px; border: 2px solid var(--accent); border-radius: 50%; }
+.chat-row__main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; margin: 0 12px 0 14px; }
+.chat-row--skeleton .chat-row__main { gap: 10px; }
+.chat-row__name { display: flex; align-items: center; gap: 4px; min-width: 0; font-size: 16px; font-weight: 600; }
+.chat-row__name--unread { font-weight: 700; }
+.chat-row__preview { display: flex; align-items: center; min-width: 0; font-size: 14px; line-height: 20px; color: #9a9a9a; }
+.chat-row__text--unread { color: #fff; font-weight: 500; }
+.chat-row__text--deleted { font-style: italic; }
+.chat-row__tick { flex: none; display: inline-flex; margin-right: 3px; color: #8a8a8a; }
+.chat-row__tick--read { color: #53bdeb; }
+.chat-row__new { font-size: 14px; line-height: 20px; font-weight: 500; color: #ff8a55; }
+.chat-row__meta { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 36px; }
+.chat-row__time { font-size: 12px; color: #8a8a8a; font-variant-numeric: tabular-nums; }
+.chat-row__time--unread { color: var(--accent); }
+.chat-row__badges { display: flex; align-items: center; gap: 6px; min-height: 20px; }
+.chat-row__muted { display: inline-flex; color: #6e6e6e; }
+.chat-row__count {
+  display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px;
+  background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums;
+}
+.chat-row__count--muted { background: #4a4a4a; }
+
+/* Notifications, as in the app (mymatcher NotificationsScreen). */
+.page--notifs { max-width: 640px; }
+.notifs-head { display: flex; align-items: center; gap: 4px; margin: -8px -8px 8px; padding: 2px 0 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+.notifs-head h1 { flex: 1; margin-left: 4px; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+.notifs-head__all { padding: 8px 12px; border: 0; background: none; color: var(--accent); font-size: 14px; font-weight: 600; cursor: pointer; }
+.notifs { display: flex; flex-direction: column; gap: 2px; }
+.notif {
+  display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px; border: 0; border-radius: 16px;
+  background: none; color: inherit; text-align: left; cursor: pointer;
+}
+.notif--unread { background: rgba(255, 107, 43, 0.06); }
+.notif:hover { background: rgba(255, 255, 255, 0.06); }
+.notif__pic { position: relative; flex: none; display: flex; }
+.notif__tile { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; background: rgba(255, 107, 43, 0.14); color: var(--accent); }
+.notif__badge {
+  position: absolute; right: -2px; bottom: -2px; display: grid; place-items: center; width: 20px; height: 20px;
+  border-radius: 50%; border: 2px solid var(--bg); background: var(--accent); color: #fff;
+}
+.notif__text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.notif .skel--avatar { width: 48px; height: 48px; }
+.notif__title { font-size: 15px; font-weight: 500; color: #e6e6e6; }
+.notif--unread .notif__title { font-weight: 700; color: #fff; }
+.notif__body { font-size: 13px; line-height: 18px; color: #9a9a9a; }
+.notif__meta { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; min-width: 34px; }
+.notif__time { font-size: 12px; color: #8a8a8a; font-variant-numeric: tabular-nums; }
+.notif__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
+.notifs__more { align-self: center; margin-top: 8px; }
+
+/* Own-profile tools inside the creator profile: the profile's heading style, not caps labels. */
+.cp .section { margin-top: 26px; }
+.cp .section > .row:first-child { justify-content: center; }
+.cp .section__title { margin-bottom: 12px; font-family: var(--font-body), sans-serif; font-size: 14px; font-weight: 600; letter-spacing: 0; text-transform: none; color: #ddd; }
+.cp .section .row.wrap { justify-content: center; }
+
+@media (max-width: 767px) {
+  /* An open chat takes the whole screen; the app hides the tab bar there. */
+  .shell:has(.inbox-layout--open) .nav { display: none; }
+  .shell:has(.inbox-layout--open) .main { padding-bottom: 0; }
+  .chat { height: 100dvh; }
+  .chat__foot { padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+  .inbox { padding-top: 20px; }
+  .page--notifs { padding-top: 10px; }
+}
 .inbox-layout { display: grid; grid-template-columns: 340px 1fr; height: 100dvh; }
 .inbox-layout > aside { border-right: 1px solid var(--border); overflow-y: auto; }
 @media (max-width: 1023px) {

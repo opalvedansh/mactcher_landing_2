@@ -11,8 +11,9 @@ import { mapSame } from '@/lib/matchr/chat/useConversation';
 import { describeMessage } from '@/lib/matchr/chat/format';
 import { formatListTime } from '@/lib/matchr/utils/relativeTime';
 import type { ChatMessage, MatchRecord } from '@/lib/matchr/types';
-import { Avatar, Spinner } from '../ui';
+import { Avatar, EmptyState } from '../ui';
 import { Icon, Verified } from '../icons';
+import { NotificationBell } from '../NotificationBell';
 
 const KIND_LABEL: Record<string, string> = { image: 'Photo', video: 'Video', audio: 'Voice message', document: 'Document' };
 
@@ -118,37 +119,57 @@ export function Inbox({ openMatchId }: { openMatchId: string | null }) {
   const q = query.trim().toLowerCase();
   const shown = (matches ?? []).filter((m) => !q || matchPerson(m, isBrand).name.toLowerCase().includes(q));
 
+  // Laid out like the app's chat list (mymatcher ChatScreen).
   return (
-    <div className="stack" style={{ padding: 16 }}>
-      <h1 className="page__title">Messages</h1>
-      <input className="input" type="search" placeholder="Search" aria-label="Search chats" value={query} onChange={(e) => setQuery(e.target.value)} />
+    <div className="inbox">
+      <div className="screen-head"><h1>Messages</h1><NotificationBell /></div>
+      <label className="search-pill">
+        <Icon name="search" size={18} />
+        <input type="search" placeholder="Search chats" aria-label="Search chats" value={query} onChange={(e) => setQuery(e.target.value)} />
+        {query && <button type="button" className="search-pill__clear" onClick={() => setQuery('')} aria-label="Clear search"><Icon name="close" size={14} width={2.6} /></button>}
+      </label>
       {error ? (
-        <button className="btn btn--outline" onClick={() => load()}>Couldn&apos;t load chats. Try again</button>
-      ) : !matches ? <Spinner /> : shown.length === 0 ? (
-        <p className="empty">{q ? 'No chats match that name.' : 'No matches yet. When you match, your chats show up here.'}</p>
+        <EmptyState icon="cloudOff" tone="muted" title="Couldn't load your chats" body="Check your connection and try again."
+          action={<button className="btn btn--outline" onClick={() => load()}>Try again</button>} />
+      ) : !matches ? (
+        <div aria-busy="true" aria-label="Loading chats">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <div key={i} className="chat-row chat-row--skeleton"><span className="skel skel--avatar" /><span className="chat-row__main"><span className="skel" style={{ width: '45%' }} /><span className="skel" style={{ width: '75%', height: 12 }} /></span></div>
+          ))}
+        </div>
+      ) : matches.length === 0 ? (
+        <EmptyState icon="chats" title="No conversations yet" body={isBrand ? 'When you match with a creator, you can chat here.' : 'When you match with a brand, you can chat here.'} />
+      ) : shown.length === 0 ? (
+        <p className="inbox__none">No chats match &ldquo;{query.trim()}&rdquo;</p>
       ) : (
-        <div className="list">
+        <div className="chat-list">
           {shown.map((m) => {
             const person = matchPerson(m, isBrand);
             const mine = m.last_message_sender === myId;
             const unread = m.unread_count ?? 0;
+            const isNew = !m.last_message_at;
+            const muted = !!m.muted_until && new Date(m.muted_until) > new Date();
+            const ticks = mine && !m.last_message_deleted_at ? (m.last_message_read_at ? 'read' : m.last_message_delivered_at ? 'delivered' : 'sent') : null;
             return (
-              <Link key={m.match_id} href={`/app/messages/${m.match_id}`} className="list-item"
-                style={m.match_id === openMatchId ? { background: 'var(--surface-2)' } : undefined}>
-                <Avatar src={person.avatar} name={person.name} size={48} />
-                <div className="grow">
-                  <div className="row row--between">
-                    <b className="ellipsis">{person.name}{person.verified && <Verified size={14} />}</b>
-                    <span className="small muted">{formatListTime(m.last_message_at || m.matched_at)}</span>
-                  </div>
-                  <div className="row row--between">
-                    <span className={unread ? 'ellipsis small' : 'ellipsis small muted'} style={unread ? { fontWeight: 700 } : undefined}>
-                      {m.last_message_at ? `${mine ? 'You: ' : ''}${previewText(m, mine)}` : 'New match. Say hi!'}
+              <Link key={m.match_id} href={`/app/messages/${m.match_id}`} className="chat-row" aria-current={m.match_id === openMatchId ? 'true' : undefined}
+                aria-label={`${person.name}${unread ? `, ${unread} unread` : ''}`}>
+                <span className={isNew ? 'chat-row__avatar chat-row__avatar--new' : 'chat-row__avatar'}><Avatar src={person.avatar} name={person.name} size={56} /></span>
+                <span className="chat-row__main">
+                  <span className={unread ? 'chat-row__name chat-row__name--unread' : 'chat-row__name'}><span className="ellipsis">{person.name}</span>{person.verified && <Verified size={15} />}</span>
+                  {isNew ? <span className="chat-row__new ellipsis">New match. Say hello.</span> : (
+                    <span className="chat-row__preview">
+                      {ticks && <span className={ticks === 'read' ? 'chat-row__tick chat-row__tick--read' : 'chat-row__tick'} aria-label={ticks === 'read' ? 'Read' : ticks === 'delivered' ? 'Delivered' : 'Sent'}><Icon name={ticks === 'sent' ? 'check' : 'checks'} size={16} /></span>}
+                      <span className={`ellipsis${unread ? ' chat-row__text--unread' : ''}${m.last_message_deleted_at ? ' chat-row__text--deleted' : ''}`}>{previewText(m, mine)}</span>
                     </span>
-                    {unread > 0 && <span className="badge">{unread}</span>}
-                    {m.muted_until && <span className="small muted" aria-label="Muted"><Icon name="bellOff" size={14} /></span>}
-                  </div>
-                </div>
+                  )}
+                </span>
+                <span className="chat-row__meta">
+                  <span className={unread && !muted ? 'chat-row__time chat-row__time--unread' : 'chat-row__time'}>{formatListTime(m.last_message_at || m.matched_at)}</span>
+                  <span className="chat-row__badges">
+                    {muted && <span className="chat-row__muted" aria-label="Muted"><Icon name="bellOff" size={14} /></span>}
+                    {unread > 0 && <span className={muted ? 'chat-row__count chat-row__count--muted' : 'chat-row__count'}>{unread}</span>}
+                  </span>
+                </span>
               </Link>
             );
           })}

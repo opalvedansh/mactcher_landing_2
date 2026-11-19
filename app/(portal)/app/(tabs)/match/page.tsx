@@ -10,7 +10,7 @@ import type { AnyProfile, BrandProfile, InfluencerProfile } from '@/lib/matchr/t
 import { SwipeDeck } from '@/components/portal/SwipeDeck';
 import { ProfileCard, brandCard, creatorCard } from '@/components/portal/ProfileCard';
 import { MatchModal } from '@/components/portal/MatchModal';
-import { Spinner, useToast } from '@/components/portal/ui';
+import { EmptyState, Spinner, useToast } from '@/components/portal/ui';
 import { MatchrLogo } from '@/components/portal/icons';
 import { NotificationBell } from '@/components/portal/NotificationBell';
 
@@ -44,17 +44,14 @@ export default function MatchPage() {
   if (loading || (deck.length === 0 && loadingMore)) body = <div className="center" style={{ minHeight: 400 }}><Spinner /></div>;
   else if (error) {
     body = (
-      <div className="empty stack" style={{ alignItems: 'center' }}>
-        <p>Couldn&apos;t load profiles.</p>
-        <button className="btn btn--primary" onClick={loadFeed}>Try again</button>
-      </div>
+      <EmptyState icon="cloudOff" tone="muted" title={isBrand ? "Couldn't load creators" : "Couldn't load brands"} body="Check your connection and try again."
+        action={<button className="btn btn--outline" onClick={loadFeed}>Try again</button>} />
     );
   } else if (deck.length === 0) {
     body = (
-      <div className="empty stack" style={{ alignItems: 'center' }}>
-        <p>You&apos;ve seen everyone for now.</p>
-        <button className="btn btn--outline" onClick={loadFeed}>Refresh</button>
-      </div>
+      <EmptyState icon="check" title={isBrand ? "You've seen all creators" : "You've seen all brands"}
+        body={isBrand ? 'New creators join every day. Check back soon.' : 'New brands join every day. Check back soon.'}
+        action={<button className="btn btn--outline" onClick={loadFeed}>Refresh</button>} />
     );
   } else {
     body = (

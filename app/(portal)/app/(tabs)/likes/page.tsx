@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { getLikesReceived, getMatches } from '@/lib/matchr/api';
 import { useAuth } from '@/lib/matchr/auth';
 import { categoryLabel } from '@/lib/matchr/options';
-import { Spinner } from '@/components/portal/ui';
+import { EmptyState, Spinner } from '@/components/portal/ui';
 import { Icon, NavIcon, Verified } from '@/components/portal/icons';
 import { NotificationBell } from '@/components/portal/NotificationBell';
 
@@ -61,7 +61,7 @@ export default function LikesPage() {
   return (
     <div className="page page--wide page--likes">
       <div className="likes-head"><h1>Likes</h1><NotificationBell /></div>
-      {error ? <div className="alert">{error}</div> : !items ? <div className="center" style={{ minHeight: 300 }}><Spinner /></div> : (
+      {error ? <EmptyState icon="cloudOff" tone="muted" title="Couldn't load your likes" body="Check your connection and try again." action={<button className="btn btn--outline" onClick={() => load().catch(() => {})}>Try again</button>} /> : !items ? <div className="center" style={{ minHeight: 300 }}><Spinner /></div> : (
         <>
           {!isPremium && hidden > 0 && (
             <div className="likes-premium">
@@ -70,7 +70,10 @@ export default function LikesPage() {
               <p>{hidden} {hidden === 1 ? 'person likes' : 'people like'} you. Activate Matchr Premium and see the people whose likes you already have.</p>
             </div>
           )}
-          {items.length === 0 ? <div className="empty">No likes or matches yet. Keep swiping!</div> : (
+          {items.length === 0 ? (
+            <EmptyState icon="heart" title="No likes yet" body={isBrand ? 'Creators who like you and your matches show up here.' : 'Brands who like you and your matches show up here.'}
+              action={<Link href="/app/match" className="btn btn--outline">Keep swiping</Link>} />
+          ) : (
             <div className="likes-grid">
               {items.map((it) => {
                 // A blurred card stays shut: opening it would show who is behind the blur.
