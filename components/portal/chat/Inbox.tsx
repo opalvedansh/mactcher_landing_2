@@ -159,7 +159,11 @@ export function Inbox({ openMatchId }: { openMatchId: string | null }) {
                 const person = matchPerson(m, isBrand);
                 return (
                   <Link key={m.match_id} href={`/app/messages/${m.match_id}`} className="new-match" aria-label={`Say hello to ${person.name}`}>
-                    <span className="new-match__ring"><Avatar src={person.avatar} name={person.name} size={62} /></span>
+                    {/* Square, so a brand's square logo is never cropped. */}
+                    <span className="new-match__pic">
+                      {person.avatar ? <img src={person.avatar} alt="" /> : <span className="new-match__initial">{person.name.charAt(0).toUpperCase()}</span>}
+                      <span className="new-match__dot" aria-hidden="true" />
+                    </span>
                     <span className="new-match__name ellipsis">{person.name}</span>
                   </Link>
                 );
