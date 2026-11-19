@@ -532,6 +532,32 @@ kbd {
   .page:has(.cp) > .page__head { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2; margin: 0; }
   .page:has(.cp) > .page__head .icon-btn { background: rgba(0, 0, 0, 0.45); color: #fff; }
 }
+/* Likes, as in the app (mymatcher LikesScreen). */
+.likes-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.likes-head h1 { font-size: 34px; font-weight: 700; }
+.likes-premium { display: flex; flex-direction: column; align-items: center; margin: 10px auto 30px; padding: 0 16px; max-width: 420px; text-align: center; }
+.likes-premium__heart { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 16px; border-radius: 50%; background: #fff; color: var(--accent); }
+.likes-premium h2 { margin-bottom: 10px; font-size: 20px; font-weight: 700; }
+.likes-premium p { font-size: 14px; line-height: 20px; }
+.likes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
+.like-card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; aspect-ratio: 1 / 1.55; border-radius: 12px; overflow: hidden; background: #222; color: #fff; }
+.like-card:active { opacity: 0.9; transform: scale(0.98); }
+.like-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.like-card--blur img { filter: blur(20px); transform: scale(1.15); }
+.like-card__initial { position: absolute; inset: 0; display: grid; place-items: center; font-size: 40px; font-weight: 700; color: var(--accent); background: #2a2a2a; }
+.like-card__info { position: relative; z-index: 1; display: flex; flex-direction: column; padding: 0 12px 14px; }
+.like-card:not(.like-card--blur)::after { content: ''; position: absolute; inset: auto 0 0; height: 70%; background: linear-gradient(rgba(0, 0, 0, 0), rgba(14, 14, 14, 0.8) 50%, #0e0e0e); }
+.like-card__name { display: flex; align-items: center; gap: 4px; min-width: 0; font-size: 16px; font-weight: 800; }
+.like-card__cats { margin-top: 2px; font-size: 11px; color: rgba(255, 255, 255, 0.8); }
+.like-card__loc { display: flex; align-items: center; gap: 4px; min-width: 0; margin-top: 4px; font-size: 10px; color: #ccc; }
+.like-card__stats { display: flex; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.2); }
+.like-card__stats span { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: 9px; color: #aaa; text-transform: uppercase; }
+.like-card__stats span + span { border-left: 1px solid rgba(255, 255, 255, 0.2); }
+.like-card__stats b { margin-bottom: 2px; font-size: 12px; font-weight: 800; color: #fff; }
+@media (max-width: 767px) {
+  .page--likes { padding: 20px 24px 32px; }
+  .likes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .inbox-layout > section { min-width: 0; }
 @media (max-width: 1023px) {
   .inbox-layout--open > aside { display: none; }
