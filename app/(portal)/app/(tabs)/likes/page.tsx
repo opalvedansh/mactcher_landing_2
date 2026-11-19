@@ -112,17 +112,8 @@ export default function LikesPage() {
         <h1>Likes</h1>
         <p className="likes-head__sub">Your matches, and who liked you</p>
       </div>
-      {items && items.length > 0 && (
-        // The same glass tiles as the profile's stats; a zero reads as quiet, not as a failure.
-        <div className="likes-stats">
-          {([['match', matches.length, matches.length === 1 ? 'Match' : 'Matches'], ['heart', likes.length, 'Liked you']] as const).map(([icon, n, label]) => (
-            <div key={label} className={n ? 'likes-stat' : 'likes-stat likes-stat--zero'}>
-              <span className="likes-stat__icon"><NavIcon name={icon} size={15} /></span>
-              <b>{n}</b>
-              <span>{label}</span>
-            </div>
-          ))}
-        </div>
+      {matches.length > 0 && (
+        <p className="likes-count"><NavIcon name="match" size={14} /><b>{matches.length}</b>{matches.length === 1 ? 'match' : 'matches'}</p>
       )}
       {error ? <EmptyState icon="cloudOff" tone="muted" title="Couldn't load your likes" body="Check your connection and try again." action={<button className="btn btn--outline" onClick={() => load().catch(() => {})}>Try again</button>} /> : !items ? (
         <div className="likes-grid" aria-busy="true" aria-label="Loading likes">{[0, 1, 2, 3].map((i) => <div key={i} className="like-card like-card--skeleton" />)}</div>
