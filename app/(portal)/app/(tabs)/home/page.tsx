@@ -12,6 +12,7 @@ import { StoryViewer, type StoryGroup } from '@/components/portal/story/StoryVie
 import { NotificationBell } from '@/components/portal/NotificationBell';
 import { Avatar, Spinner, useToast } from '@/components/portal/ui';
 import { Icon } from '@/components/portal/icons';
+import { showAlert } from '@/components/portal/dialogs';
 
 export default function HomePage() {
   const router = useRouter();
@@ -76,10 +77,21 @@ export default function HomePage() {
 
   const me = stories.find((g) => g.isMe);
   const viewable = stories.filter((g) => g.items.length);
+  const ringClass = (g?: StoryGroup) =>
+    !g?.items.length ? 'ring ring--empty' : g.items.some((s) => s.close_friends) ? 'ring ring--cf' : 'ring';
+
+  // Your own bubble opens the app's "Create" menu rather than going straight to one place.
+  const openMine = () => showAlert('Create', undefined, [
+    ...(me?.items.length ? [{ text: 'View your story', onPress: () => setViewing(viewable.indexOf(me)) }] : []),
+    { text: 'Add to story', onPress: () => router.push('/app/stories/new') },
+    { text: 'Create post', onPress: () => router.push('/app/create-post') },
+    { text: 'Cancel', style: 'cancel' as const },
+  ]);
 
   return (
-    <div className="page">
-      <div className="page__head">
+    <div className="page page--home">
+      {/* The app's home has no title bar; on phones the stories row comes first. */}
+      <div className="page__head home-head">
         <h1 className="page__title">Home</h1>
         <div className="row">
           <Link href="/app/create-post" className="icon-btn" aria-label="New post"><Icon name="plus" /></Link>
@@ -88,18 +100,15 @@ export default function HomePage() {
       </div>
 
       <div className="stories-row" role="list" aria-label="Stories">
-        <div className="story-ring" role="listitem">
-          <button className="story-ring" style={{ width: 'auto' }} onClick={() => (me?.items.length ? setViewing(viewable.indexOf(me)) : router.push('/app/stories/new'))}
-            aria-label={me?.items.length ? 'View your story' : 'Add to your story'}>
-            <span className={me?.items.length ? 'ring' : 'ring ring--seen'}><Avatar src={me?.avatar} name="You" size={60} /></span>
-            Your story
-          </button>
-          {!!me?.items.length && <Link href="/app/stories/new" className="small accent">+ Add</Link>}
-        </div>
+        <button className="story-ring" role="listitem" onClick={openMine} aria-label="Your story, create">
+          <span className={ringClass(me)}><Avatar src={me?.avatar} name="You" size={70} /></span>
+          <span className="story-ring__add" aria-hidden="true"><Icon name="plus" size={12} width={3} /></span>
+          <span className="story-ring__name story-ring__name--me">Your story</span>
+        </button>
         {viewable.filter((g) => !g.isMe).map((g) => (
-          <button key={g.id} className="story-ring" role="listitem" onClick={() => setViewing(viewable.indexOf(g))}>
-            <span className="ring"><Avatar src={g.avatar} name={g.name} size={60} /></span>
-            <span className="ellipsis" style={{ maxWidth: 72 }}>{g.name}</span>
+          <button key={g.id} className="story-ring" role="listitem" onClick={() => setViewing(viewable.indexOf(g))} aria-label={`${g.name}'s story`}>
+            <span className={ringClass(g)}><Avatar src={g.avatar} name={g.name} size={70} /></span>
+            <span className="story-ring__name ellipsis">{g.name}</span>
           </button>
         ))}
       </div>
@@ -112,7 +121,7 @@ export default function HomePage() {
           <Link href="/app/create-post" className="btn btn--primary">Share your first post</Link>
         </div>
       ) : (
-        <div className="stack" style={{ gap: 20 }}>
+        <div className="feed">
           {posts.map((p) => (
             <PostCard key={p.id} post={p} toast={toast.show} onGone={(id) => setPosts((ps) => ps?.filter((x) => x.id !== id) ?? ps)} />
           ))}
