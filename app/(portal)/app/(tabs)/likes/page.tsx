@@ -9,7 +9,7 @@ import { getLikesReceived, getMatches } from '@/lib/matchr/api';
 import { useAuth } from '@/lib/matchr/auth';
 import { categoryLabel } from '@/lib/matchr/options';
 import { EmptyState } from '@/components/portal/ui';
-import { Icon, NavIcon, Verified } from '@/components/portal/icons';
+import { Icon, MatchrLogo, NavIcon, Verified } from '@/components/portal/icons';
 import { NotificationBell } from '@/components/portal/NotificationBell';
 
 type Card = {
@@ -60,7 +60,6 @@ export default function LikesPage() {
   const likes = items?.filter((i) => i.type === 'like') ?? [];
   const hiddenLikes = isPremium ? [] : likes;
   const other = isBrand ? 'creator' : 'brand';
-  const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
   const card = (it: Card, i: number) => {
     // A blurred card stays shut: opening it would show who is behind the blur.
@@ -97,20 +96,34 @@ export default function LikesPage() {
 
   const section = (title: string, list: Card[]) => list.length > 0 && (
     <section className="likes-section">
-      {filter === 'all' && <h2 className="likes-section__title">{title}<span>{list.length}</span></h2>}
+      {filter === 'all' && matches.length > 0 && likes.length > 0 && <h2 className="likes-section__title">{title}<span>{list.length}</span></h2>}
       <div className="likes-grid">{list.map(card)}</div>
     </section>
   );
 
   return (
     <div className="page page--wide page--likes">
-      <div className="likes-head">
-        <div>
-          <h1>Likes</h1>
-          {items && items.length > 0 && <p className="likes-head__sub">{plural(matches.length, 'match', 'matches')} · {plural(likes.length, 'like', 'likes')} received</p>}
-        </div>
+      {/* Phones: the Match screen's brand header; the side nav carries it on wider screens. */}
+      <div className="m-header">
+        <span className="m-header__logo"><MatchrLogo size={34} /> Matchr</span>
         <NotificationBell />
       </div>
+      <div className="likes-head">
+        <h1>Likes</h1>
+        <p className="likes-head__sub">Your matches, and who liked you</p>
+      </div>
+      {items && items.length > 0 && (
+        // The same glass tiles as the profile's stats; a zero reads as quiet, not as a failure.
+        <div className="likes-stats">
+          {([['match', matches.length, matches.length === 1 ? 'Match' : 'Matches'], ['heart', likes.length, 'Liked you']] as const).map(([icon, n, label]) => (
+            <div key={label} className={n ? 'likes-stat' : 'likes-stat likes-stat--zero'}>
+              <span className="likes-stat__icon"><NavIcon name={icon} size={15} /></span>
+              <b>{n}</b>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      )}
       {error ? <EmptyState icon="cloudOff" tone="muted" title="Couldn't load your likes" body="Check your connection and try again." action={<button className="btn btn--outline" onClick={() => load().catch(() => {})}>Try again</button>} /> : !items ? (
         <div className="likes-grid" aria-busy="true" aria-label="Loading likes">{[0, 1, 2, 3].map((i) => <div key={i} className="like-card like-card--skeleton" />)}</div>
       ) : items.length === 0 ? (
