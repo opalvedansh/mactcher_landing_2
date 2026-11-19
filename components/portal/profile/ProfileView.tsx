@@ -5,6 +5,7 @@
 // screens; only real data is shown (the mobile "engagement" and "audience"
 // tabs hold placeholder figures, so they are left out here).
 import type { ReactNode } from 'react';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import type { BrandProfile, InfluencerProfile, AnyProfile, PaymentMode } from '@/lib/matchr/types';
 import { compactCount, displayHandle, platformLabel } from '@/lib/matchr/utils/followers';
 import { describePackage, type CreatorPackage } from '@/lib/matchr/utils/packages';
@@ -58,6 +59,14 @@ function Gallery({ photos, title }: { photos?: string[]; title: string }) {
   );
 }
 
+// The photo scrolls at half speed under the panel, as in the app (off for reduced motion).
+function ParallaxCover({ src }: { src: string | null }) {
+  const { scrollY } = useScroll();
+  const still = useReducedMotion();
+  const y = useTransform(scrollY, [0, 600], [0, still ? 0 : 300]);
+  return <div className="cp__cover">{src && <motion.img src={src} alt="" style={{ y }} />}</div>;
+}
+
 const PACKAGE_ICON: Record<CreatorPackage['type'], IconName> = { story: 'story', reel: 'reel', ugc: 'ugc', brand_collab: 'users', custom: 'star' };
 
 // Laid out like the mobile app's creator profile (mymatcher
@@ -80,7 +89,7 @@ function CreatorProfile({ p, own, headerActions, onRequestQuote, children }: {
 
   return (
     <div className="cp">
-      <div className="cp__cover">{cover && <img src={cover} alt="" />}</div>
+      <ParallaxCover src={cover} />
       <div className="cp__panel">
         <div className="cp__avatar"><Avatar src={isValidUrl(p.avatar_url) ? p.avatar_url : null} name={p.name} size={98} /></div>
         <h1 className="cp__name">{p.name || (own ? 'Your Profile' : 'Creator')}{p.age ? `, ${p.age}` : ''}{p.verified && <Verified size={22} />}</h1>
