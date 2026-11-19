@@ -72,6 +72,7 @@ export default function PublicProfilePage() {
       <ProfileView
         profile={profile}
         own={false}
+        onRequestQuote={matchId ? () => router.push(`/app/messages/${matchId}`) : undefined}
         headerActions={matchId ? (
           <button className="btn btn--primary" onClick={() => router.push(`/app/messages/${matchId}`)}>Message</button>
         ) : (
