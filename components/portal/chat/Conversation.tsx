@@ -71,6 +71,11 @@ function ForwardModal({ myMatchId, isBrand, onClose, onForward }: {
   );
 }
 
+// Two messages read as one run when the same person sent them within a few minutes.
+const RUN_MS = 5 * 60_000;
+const runs = (a: ChatMessage | undefined, b: ChatMessage) =>
+  !!a && a.sender_id === b.sender_id && new Date(b.created_at).getTime() - new Date(a.created_at).getTime() < RUN_MS;
+
 export function Conversation({ match, myId, isBrand }: { match: MatchRecord; myId: string; isBrand: boolean }) {
   const router = useRouter();
   const matchId = match.match_id;
@@ -207,16 +212,20 @@ export function Conversation({ match, myId, isBrand }: { match: MatchRecord; myI
               </button>
             )}
             {chat.messages.length === 0 && <p className="empty">You matched with {other.name}. Say hi!</p>}
-            {chat.messages.map((m) => {
+            {chat.messages.map((m, i) => {
               const day = dayLabel(m.created_at);
               const showDay = day !== lastDay;
               lastDay = day;
+              const prev = chat.messages[i - 1];
+              const next = chat.messages[i + 1];
               return (
                 <Fragment key={m.id}>
-                  {showDay && <div className="day-sep">{day}</div>}
-                  {m.id === chat.firstUnreadId && <div className="day-sep accent">Unread messages</div>}
+                  {showDay && <div className="day-sep"><span>{day}</span></div>}
+                  {m.id === chat.firstUnreadId && <div className="unread-sep"><span>Unread messages</span></div>}
                   <MessageBubble
                     m={m} mine={m.sender_id === myId}
+                    joinTop={!showDay && m.id !== chat.firstUnreadId && runs(prev, m)}
+                    joinBottom={!!next && next.id !== chat.firstUnreadId && dayLabel(next.created_at) === day && runs(m, next)}
                     send={chat.sendStates[m.client_msg_id ?? m.id.replace(/^temp-/, '')]}
                     onOpenActions={setActing} onRetry={chat.retry} onDiscard={chat.discard}
                   />

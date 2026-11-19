@@ -12,7 +12,7 @@ import { describeMessage } from '@/lib/matchr/chat/format';
 import { formatListTime } from '@/lib/matchr/utils/relativeTime';
 import type { ChatMessage, MatchRecord } from '@/lib/matchr/types';
 import { Avatar, EmptyState } from '../ui';
-import { Icon, Verified } from '../icons';
+import { Icon, MatchrLogo, Verified } from '../icons';
 import { NotificationBell } from '../NotificationBell';
 
 const KIND_LABEL: Record<string, string> = { image: 'Photo', video: 'Video', audio: 'Voice message', document: 'Document' };
@@ -118,11 +118,19 @@ export function Inbox({ openMatchId }: { openMatchId: string | null }) {
 
   const q = query.trim().toLowerCase();
   const shown = (matches ?? []).filter((m) => !q || matchPerson(m, isBrand).name.toLowerCase().includes(q));
+  // Matches with no messages yet get the rail; a search lists everyone in one place.
+  const fresh = q ? [] : shown.filter((m) => !m.last_message_at);
+  const talking = q ? shown : shown.filter((m) => m.last_message_at);
 
   // Laid out like the app's chat list (mymatcher ChatScreen).
   return (
     <div className="inbox">
-      <div className="screen-head"><h1>Messages</h1><NotificationBell /></div>
+      {/* Phones: the brand header the other tabs use; the side nav carries it on wider screens. */}
+      <div className="m-header">
+        <span className="m-header__logo"><MatchrLogo size={34} /> Matchr</span>
+        <NotificationBell />
+      </div>
+      <div className="screen-head screen-head--inbox"><h1>Messages</h1><span className="screen-head__bell"><NotificationBell /></span></div>
       <label className="search-pill">
         <Icon name="search" size={18} />
         <input type="search" placeholder="Search chats" aria-label="Search chats" value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -142,8 +150,26 @@ export function Inbox({ openMatchId }: { openMatchId: string | null }) {
       ) : shown.length === 0 ? (
         <p className="inbox__none">No chats match &ldquo;{query.trim()}&rdquo;</p>
       ) : (
+        <>
+        {fresh.length > 0 && (
+          <section className="new-matches" aria-label="New matches">
+            <h2>New matches<span>{fresh.length}</span></h2>
+            <div className="new-matches__rail">
+              {fresh.map((m) => {
+                const person = matchPerson(m, isBrand);
+                return (
+                  <Link key={m.match_id} href={`/app/messages/${m.match_id}`} className="new-match" aria-label={`Say hello to ${person.name}`}>
+                    <span className="new-match__ring"><Avatar src={person.avatar} name={person.name} size={62} /></span>
+                    <span className="new-match__name ellipsis">{person.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
+        )}
+        {talking.length > 0 && fresh.length > 0 && <h2 className="inbox__label">Conversations</h2>}
         <div className="chat-list">
-          {shown.map((m) => {
+          {talking.map((m) => {
             const person = matchPerson(m, isBrand);
             const mine = m.last_message_sender === myId;
             const unread = m.unread_count ?? 0;
@@ -174,6 +200,7 @@ export function Inbox({ openMatchId }: { openMatchId: string | null }) {
             );
           })}
         </div>
+        </>
       )}
     </div>
   );

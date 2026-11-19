@@ -43,9 +43,12 @@ function Attachment({ m }: { m: ChatMessage }) {
   }
 }
 
-export const MessageBubble = memo(function MessageBubble({ m, mine, send, onOpenActions, onRetry, onDiscard }: {
+export const MessageBubble = memo(function MessageBubble({ m, mine, joinTop, joinBottom, send, onOpenActions, onRetry, onDiscard }: {
   m: ChatMessage;
   mine: boolean;
+  /** Part of a run from the same sender: the joined corners tighten. */
+  joinTop?: boolean;
+  joinBottom?: boolean;
   send?: SendState;
   onOpenActions: (m: ChatMessage) => void;
   onRetry: (clientId: string) => void;
@@ -57,7 +60,7 @@ export const MessageBubble = memo(function MessageBubble({ m, mine, send, onOpen
   for (const r of m.reactions ?? []) grouped.set(r.emoji, (grouped.get(r.emoji) ?? 0) + 1);
 
   return (
-    <div className={mine ? 'bubble-row bubble-row--mine' : 'bubble-row'}>
+    <div className={`bubble-row${mine ? ' bubble-row--mine' : ''}${joinTop ? ' bubble-row--join-top' : ''}${joinBottom ? ' bubble-row--join-bottom' : ''}`}>
       <div
         className={deleted ? 'bubble bubble--deleted' : 'bubble'}
         role="button" tabIndex={0} aria-label="Message options"
