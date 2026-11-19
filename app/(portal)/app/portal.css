@@ -638,13 +638,44 @@ kbd {
   .page:has(.cp) > .page__head { position: absolute; top: 12px; left: 12px; right: 12px; z-index: 2; margin: 0; }
   .page:has(.cp) > .page__head .icon-btn { background: rgba(0, 0, 0, 0.45); color: #fff; }
 }
-/* Likes, as in the app (mymatcher LikesScreen). */
-.likes-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-.likes-head h1 { font-size: 34px; font-weight: 700; }
-.likes-premium { display: flex; flex-direction: column; align-items: center; margin: 10px auto 30px; padding: 0 16px; max-width: 420px; text-align: center; }
-.likes-premium__heart { display: grid; place-items: center; width: 56px; height: 56px; margin-bottom: 16px; border-radius: 50%; background: #fff; color: var(--accent); }
-.likes-premium h2 { margin-bottom: 10px; font-size: 20px; font-weight: 700; }
-.likes-premium p { font-size: 14px; line-height: 20px; }
+/* Likes: the app's photo-card grid (mymatcher LikesScreen), with a filter,
+   sections, and a hero for the likes that stay hidden without premium. */
+.likes-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+.likes-head h1 { font-size: 34px; font-weight: 700; letter-spacing: -0.5px; }
+.likes-head__sub { margin-top: 2px; font-size: 14px; color: #9a9a9a; font-variant-numeric: tabular-nums; }
+.likes-hero {
+  position: relative; display: flex; flex-direction: column; align-items: center; margin: 4px 0 28px; padding: 28px 22px 24px;
+  border-radius: 28px; overflow: hidden; text-align: center;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(255, 107, 43, 0.16), rgba(255, 107, 43, 0) 60%), #161616;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.likes-hero__fan { position: relative; width: 190px; height: 128px; margin-bottom: 18px; }
+.likes-hero__card {
+  position: absolute; left: 50%; top: 4px; width: 78px; height: 112px; margin-left: -39px; border-radius: 14px; overflow: hidden;
+  background: linear-gradient(160deg, #3a2a22, #1f1f1f); border: 2px solid #161616; box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+  transform: translateX(calc(var(--i) * 52px)) rotate(calc(var(--i) * 9deg)); transform-origin: 50% 120%;
+}
+.likes-hero__card img { width: 100%; height: 100%; object-fit: cover; filter: blur(14px) saturate(1.1); transform: scale(1.25); }
+.likes-hero__heart {
+  position: absolute; left: 50%; bottom: 0; display: grid; place-items: center; width: 46px; height: 46px; margin-left: -23px;
+  border-radius: 50%; background: #fff; color: var(--accent); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+.likes-hero h2 { font-family: var(--font-display), sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.likes-hero p { max-width: 300px; margin-top: 8px; font-size: 14px; line-height: 20px; color: #b5b5b5; }
+.likes-hero__cta {
+  margin-top: 18px; padding: 11px 26px; border-radius: 999px; background: #fff; color: #111; font-size: 14px; font-weight: 700;
+}
+.likes-hero__cta:active { transform: scale(0.97); }
+.segmented { display: flex; gap: 4px; margin-bottom: 22px; padding: 4px; border-radius: 999px; background: #1a1a1a; }
+.segmented__item {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 38px; border: 0; border-radius: 999px;
+  background: none; color: #9a9a9a; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.segmented__item span { font-size: 12px; font-variant-numeric: tabular-nums; opacity: 0.7; }
+.segmented__item[aria-selected="true"] { background: #fff; color: #111; }
+.likes-section + .likes-section { margin-top: 30px; }
+.likes-section__title { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; font-family: var(--font-body), sans-serif; font-size: 17px; font-weight: 700; }
+.likes-section__title span { font-size: 14px; font-weight: 600; color: #8a8a8a; font-variant-numeric: tabular-nums; }
 .likes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 16px; }
 .like-card { position: relative; display: flex; flex-direction: column; justify-content: flex-end; aspect-ratio: 1 / 1.55; border-radius: 12px; overflow: hidden; background: #222; color: #fff; }
 .like-card:active { opacity: 0.9; transform: scale(0.98); }
@@ -660,6 +691,31 @@ kbd {
 .like-card__stats span { flex: 1; display: flex; flex-direction: column; align-items: center; font-size: 9px; color: #aaa; text-transform: uppercase; }
 .like-card__stats span + span { border-left: 1px solid rgba(255, 255, 255, 0.2); }
 .like-card__stats b { margin-bottom: 2px; font-size: 12px; font-weight: 800; color: #fff; }
+@keyframes card-in { from { opacity: 0; transform: translateY(10px) scale(0.98); } }
+@media (prefers-reduced-motion: no-preference) {
+  .like-card { animation: card-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 45ms); }
+  .like-card img { transition: transform 0.5s cubic-bezier(0.2, 0.7, 0.2, 1); }
+  .like-card:not(.like-card--blur):hover img { transform: scale(1.04); }
+}
+.like-card__open { position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+.like-card__chip {
+  position: absolute; top: 10px; left: 10px; z-index: 1; padding: 4px 10px; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: #fff; font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+}
+.like-card__chip::before { content: ''; display: inline-block; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; background: var(--accent); vertical-align: 1px; }
+.like-card__chat {
+  position: absolute; top: 8px; right: 8px; z-index: 3; display: grid; place-items: center; width: 36px; height: 36px;
+  border-radius: 50%; background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.like-card__chat:active { transform: scale(0.92); }
+.like-card__veil {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(rgba(17, 17, 17, 0.15), rgba(17, 17, 17, 0.55)); color: #fff; font-size: 13px; font-weight: 700;
+}
+.like-card__veil-heart { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.92); color: var(--accent); }
+.like-card--skeleton { background: #1a1a1a; }
+@media (prefers-reduced-motion: no-preference) { .like-card--skeleton { animation: skel-pulse 1.4s ease-in-out infinite; } }
 @media (max-width: 767px) {
   .page--likes { padding: 20px 24px 32px; }
   .likes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
