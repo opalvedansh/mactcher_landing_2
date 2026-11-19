@@ -66,16 +66,16 @@ export function CreatorReviews({ creatorId, isOwnProfile }: { creatorId: string;
         <p className="muted">{isOwnProfile ? 'No reviews yet. Brands you match with can review your work here.' : 'No reviews yet.'}</p>
       )}
       {reviews.map((r) => (
-        <div key={r.id} className="card stack" style={{ gap: 8 }}>
-          <p>“{r.quote}”</p>
-          <div className="row">
-            <Avatar src={r.brand_logo_url} name={r.reviewer_name} size={32} />
-            <div className="grow">
+        <figure key={r.id} className="review">
+          <blockquote className="review__quote">{r.quote}</blockquote>
+          <figcaption className="review__by">
+            <Avatar src={r.brand_logo_url} name={r.reviewer_name} size={36} />
+            <span className="review__who">
               <b>{r.reviewer_name}</b>
-              <div className="muted small">{[r.reviewer_title, r.brand_name].filter(Boolean).join(' · ')}{r.brand_verified && <Verified size={12} />}</div>
-            </div>
-          </div>
-        </div>
+              <span>{[r.reviewer_title, r.brand_name].filter(Boolean).join(' · ')}{r.brand_verified && <Verified size={12} />}</span>
+            </span>
+          </figcaption>
+        </figure>
       ))}
       {canReview && !editing && (
         <div className="row">

@@ -100,19 +100,25 @@ function CreatorTools({ profile, onChange }: { profile: InfluencerProfile; onCha
     }
   };
 
+  const noPhoto = !profile.avatar_url && !(profile.photos ?? []).length;
+  // Verified already shows as the badge by the name, so only the way to get it needs a place here.
   return (
     <>
-      <Section title="Verification">
-        <div className="row wrap">
-          {profile.verified ? <span className="row" style={{ gap: 6 }}><Verified /> Verified</span> : (
-            <button className="btn btn--outline btn--sm" disabled={!profile.avatar_url && !(profile.photos ?? []).length} onClick={() => setFaceCheck(true)}>Verify with a selfie</button>
-          )}
-          {profile.instagram_handle && (
-            <button className="btn btn--outline btn--sm" disabled={syncing} onClick={sync}>{syncing ? <Spinner small /> : 'Sync Instagram stats'}</button>
-          )}
+      {profile.instagram_handle && (
+        <button className="cp-sync" disabled={syncing} onClick={sync}>
+          {syncing ? <Spinner small /> : <Icon name="rotateRight" size={14} width={2.4} />}{syncing ? 'Syncing from Instagram' : 'Sync stats from Instagram'}
+        </button>
+      )}
+      {!profile.verified && (
+        <div className="cp-verify">
+          <span className="cp-verify__icon"><Icon name="verified" size={22} /></span>
+          <span className="cp-verify__text">
+            <b>Get the verified badge</b>
+            <span>{noPhoto ? 'Add a profile photo first: the selfie is compared with it.' : 'Confirm it is you with a quick selfie.'}</span>
+          </span>
+          <button className="cp-verify__btn" disabled={noPhoto} onClick={() => setFaceCheck(true)}>Verify</button>
         </div>
-        {!profile.verified && !profile.avatar_url && !(profile.photos ?? []).length && <p className="small muted" style={{ marginTop: 6 }}>Add a profile photo first: the selfie is compared with it.</p>}
-      </Section>
+      )}
       {faceCheck && (
         <FaceVerifyModal onClose={() => setFaceCheck(false)} onVerified={() => onChange({ ...profile, verified: true })} />
       )}

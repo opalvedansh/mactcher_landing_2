@@ -59,6 +59,20 @@ function Gallery({ photos, title }: { photos?: string[]; title: string }) {
   );
 }
 
+// Phones: once the name scrolls away, a slim frosted bar keeps who this is in view.
+function CompactBar({ name, avatar, verified }: { name: string; avatar: string | null; verified: boolean }) {
+  const { scrollY } = useScroll();
+  const opacity = useTransform(scrollY, [330, 400], [0, 1]);
+  const y = useTransform(scrollY, [330, 400], [-8, 0]);
+  const shown = useTransform(scrollY, (v) => (v > 360 ? 'auto' : 'none'));
+  return (
+    <motion.div className="cp-bar" style={{ opacity, y, pointerEvents: shown }} aria-hidden="true">
+      <Avatar src={avatar} name={name} size={28} />
+      <b className="ellipsis">{name}</b>{verified && <Verified size={16} />}
+    </motion.div>
+  );
+}
+
 // The photo scrolls at half speed under the panel, as in the app (off for reduced motion).
 function ParallaxCover({ src }: { src: string | null }) {
   const { scrollY } = useScroll();
@@ -90,10 +104,11 @@ function CreatorProfile({ p, own, headerActions, onRequestQuote, children }: {
   return (
     <div className="cp">
       <ParallaxCover src={cover} />
+      <CompactBar name={p.name || (own ? 'Your Profile' : 'Creator')} avatar={isValidUrl(p.avatar_url) ? p.avatar_url : null} verified={!!p.verified} />
       <div className="cp__panel">
         <div className="cp__avatar"><Avatar src={isValidUrl(p.avatar_url) ? p.avatar_url : null} name={p.name} size={98} /></div>
         <h1 className="cp__name">{p.name || (own ? 'Your Profile' : 'Creator')}{p.age ? `, ${p.age}` : ''}{p.verified && <Verified size={22} />}</h1>
-        {(p.categories ?? []).length > 0 && <p className="cp__cats">{p.categories.map(categoryLabel).join(' & ')}</p>}
+        {(p.categories ?? []).length > 0 && <p className="cp__cats">{p.categories.map(categoryLabel).join(p.categories.length > 2 ? ' · ' : ' & ')}</p>}
         {p.location && <p className="cp__loc"><Icon name="pin" size={16} />{p.location}</p>}
         {p.bio ? <p className="cp__bio">{p.bio}</p> : own && <p className="cp__bio muted">Add a bio so brands know what you do.</p>}
         {headerActions && <div className="cp__actions">{headerActions}</div>}
