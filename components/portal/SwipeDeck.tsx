@@ -81,10 +81,11 @@ export function SwipeDeck<T>({ items, keyOf, labelOf, renderCard, onSwipe, onOpe
         <TopCard key={keyOf(top)} flingRef={flingRef} label={labelOf(top)} onOpen={() => onOpen(top)} onSwipe={(dir) => onSwipe(top, dir)}>
           {renderCard(top)}
         </TopCard>
-      </div>
-      <div className="deck-actions">
-        <button className="icon-btn deck-actions__pass" onClick={() => flingRef.current?.('left')} aria-label="Pass"><Icon name="close" size={26} width={2.6} /></button>
-        <button className="icon-btn deck-actions__like" onClick={() => flingRef.current?.('right')} aria-label="Like"><NavIcon name="heart" size={26} /></button>
+        {/* On the card's bottom edge, as in the app; they stay put while a card flies off. */}
+        <div className="deck-actions">
+          <button className="icon-btn deck-actions__pass" onClick={() => flingRef.current?.('left')} aria-label="Pass"><Icon name="close" size={28} width={2.6} /></button>
+          <button className="icon-btn deck-actions__like" onClick={() => flingRef.current?.('right')} aria-label="Like"><NavIcon name="heart" size={26} /></button>
+        </div>
       </div>
       <p className="deck-hint">Drag the card, or press <kbd aria-label="left arrow">←</kbd> <kbd aria-label="right arrow">→</kbd></p>
     </>

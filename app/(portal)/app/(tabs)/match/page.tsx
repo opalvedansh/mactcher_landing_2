@@ -11,6 +11,8 @@ import { SwipeDeck } from '@/components/portal/SwipeDeck';
 import { ProfileCard, brandCard, creatorCard } from '@/components/portal/ProfileCard';
 import { MatchModal } from '@/components/portal/MatchModal';
 import { Spinner, useToast } from '@/components/portal/ui';
+import { MatchrLogo } from '@/components/portal/icons';
+import { NotificationBell } from '@/components/portal/NotificationBell';
 
 export default function MatchPage() {
   const router = useRouter();
@@ -69,8 +71,14 @@ export default function MatchPage() {
 
   return (
     <div className="page page--deck">
-      <div className="page__head">
-        <h1 className="page__title">{isBrand ? 'Find creators' : 'Find brands'}</h1>
+      {/* Phones only: the side nav carries the logo on wider screens. */}
+      <div className="m-header">
+        <span className="m-header__logo"><MatchrLogo size={34} /> Matchr</span>
+        <NotificationBell />
+      </div>
+      <div className="deck-title">
+        <h1>{isBrand ? 'Discover Influencers' : 'Discover Brands'}</h1>
+        <p>{isBrand ? 'Find creators that match your brand' : 'Find brands that match your vibe'}</p>
       </div>
       {body}
       {match && (

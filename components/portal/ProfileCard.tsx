@@ -65,15 +65,15 @@ export function ProfileCard({ card }: { card: Card }) {
       {card.image ? <img src={card.image} alt="" draggable={false} className={card.logo ? 'swipe-card__logo' : undefined} /> : (
         <div className="center" style={{ minHeight: '100%', fontSize: 120, fontWeight: 800, color: '#333' }}>{card.name.charAt(0).toUpperCase()}</div>
       )}
-      {card.verified && <span className="chip chip--static" style={{ position: 'absolute', top: 16, right: 16, background: 'rgba(0,0,0,.55)', border: 0 }}><Icon name="check" size={14} width={3} /> Verified</span>}
-      <div className="swipe-card__shade stack" style={{ gap: 8 }}>
-        <h2 style={{ fontSize: 30, fontWeight: 900 }}>{card.name}</h2>
-        {card.subtitle && <p className="muted-2">{card.subtitle}</p>}
-        {card.location && <p className="muted small row" style={{ gap: 5 }}><Icon name="pin" size={14} />{card.location}</p>}
-        {card.tags.length > 0 && <div className="row wrap" style={{ gap: 6 }}>{card.tags.map((t) => <span key={t} className="chip chip--static small">{t}</span>)}</div>}
+      {card.verified && <span className="sc-verified"><Icon name="check" size={13} width={3} /> Verified</span>}
+      <div className="swipe-card__shade">
+        <h2 className="sc-name">{card.name}</h2>
+        {card.subtitle && <p className="sc-cats">{card.subtitle}</p>}
+        {card.location && <p className="sc-loc"><Icon name="pin" size={13} />{card.location}</p>}
+        {card.tags.length > 0 && <div className="sc-tags">{card.tags.map((t) => <span key={t} className="sc-pill">{t}</span>)}</div>}
         {card.stats.length > 0 && (
-          <div className="row" style={{ gap: 18 }}>
-            {card.stats.map((s) => <div key={s.label}><b>{s.value}</b><div className="muted small">{s.label}</div></div>)}
+          <div className="sc-stats">
+            {card.stats.map((s) => <div key={s.label}><b>{s.value}</b><span>{s.label}</span></div>)}
           </div>
         )}
       </div>
