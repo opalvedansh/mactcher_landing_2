@@ -19,7 +19,8 @@ export function formatBudget(min?: number | null, max?: number | null) {
 }
 
 // `logo`: the image is a logo, shown whole rather than cropped like a photo.
-type Card = { image: string | null; logo?: boolean; name: string; verified: boolean; subtitle: string; location: string; tags: string[]; stats: { value: string; label: string }[] };
+// `lead`: an accent pill in front of the tags, naming what they are.
+type Card = { image: string | null; logo?: boolean; lead?: string; name: string; verified: boolean; subtitle: string; location: string; tags: string[]; stats: { value: string; label: string }[] };
 
 export function brandCard(p: BrandProfile): Card {
   const stats: Card['stats'] = [];
@@ -32,8 +33,9 @@ export function brandCard(p: BrandProfile): Card {
     logo: !isValidUrl(p.cover_url),
     name: p.name || 'Brand',
     verified: !!p.verified,
-    subtitle: (p.categories ?? []).map(categoryLabel).join(', '),
+    subtitle: (p.categories ?? []).map(categoryLabel).join(' · '),
     location: p.location ?? '',
+    lead: 'Looking for',
     tags: p.campaign_types ?? [],
     stats,
   };
@@ -70,7 +72,7 @@ export function ProfileCard({ card }: { card: Card }) {
         <h2 className="sc-name">{card.name}</h2>
         {card.subtitle && <p className="sc-cats">{card.subtitle}</p>}
         {card.location && <p className="sc-loc"><Icon name="pin" size={13} />{card.location}</p>}
-        {card.tags.length > 0 && <div className="sc-tags">{card.tags.map((t) => <span key={t} className="sc-pill">{t}</span>)}</div>}
+        {card.tags.length > 0 && <div className="sc-tags">{card.lead && <span className="sc-pill sc-pill--lead">{card.lead}</span>}{card.tags.map((t) => <span key={t} className="sc-pill">{t}</span>)}</div>}
         {card.stats.length > 0 && (
           <div className="sc-stats">
             {card.stats.map((s) => <div key={s.label}><b>{s.value}</b><span>{s.label}</span></div>)}

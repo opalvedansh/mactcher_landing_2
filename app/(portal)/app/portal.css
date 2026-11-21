@@ -148,7 +148,7 @@ p { margin: 0; }
 .page__title { font-size: 28px; font-weight: 800; }
 /* The card is sized to the window so the Like / Pass buttons are never
    below the fold; the page narrows to it so the title lines up with it. */
-.page--deck { --deck-w: min(420px, calc((100dvh - 200px) * 3 / 4.4)); max-width: calc(var(--deck-w) + 40px); }
+.page--deck { --deck-w: min(420px, calc((100dvh - 230px) * 3 / 4.4)); max-width: calc(var(--deck-w) + 40px); }
 
 /* Match title block; the phone rules below restyle it. */
 .deck-title { margin-bottom: 16px; }
@@ -157,16 +157,17 @@ p { margin: 0; }
 .m-header { display: none; }
 .deck-hint { text-align: center; margin-top: 12px; font-size: 13px; color: var(--muted); }
 
-/* Phones: the app's floating white pill tab bar (mymatcher src/theme/tabBar.ts). */
+/* Phones: a white tab bar docked to the bottom edge, rounded on top. */
 @media (max-width: 767px) {
-  :root { --tab-h: 84px; } /* 60px pill + 12px gap below + 12px clear above */
+  :root { --tab-h: 72px; }
   .nav {
-    inset: auto 16px max(12px, env(safe-area-inset-bottom)) 16px; width: auto; height: 60px;
-    padding: 0 8px; flex-direction: row; justify-content: space-around; align-items: center; gap: 0;
-    border: 0; border-radius: 30px; background: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    inset: auto 0 0 0; width: auto; height: calc(var(--tab-h) + env(safe-area-inset-bottom));
+    padding: 0 8px env(safe-area-inset-bottom); flex-direction: row; justify-content: space-around; align-items: center; gap: 0;
+    border: 0; border-radius: 24px 24px 0 0; background: #fff; box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
   }
   .nav__brand, .nav__label, .nav__spacer, .nav__extra { display: none; }
-  .nav__link { flex: 1; justify-content: center; padding: 12px 0; color: #666; }
+  .nav__link { flex: 1; justify-content: center; padding: 12px 0; color: #555; }
+  .nav__link svg { width: 28px; height: 28px; }
   .nav__link:hover { background: transparent; color: #444; }
   .nav__link[aria-current="page"] { background: transparent; color: var(--accent); }
   .main { margin-left: 0; padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom)); }
@@ -183,7 +184,7 @@ p { margin: 0; }
   .deck-title { padding: 0 20px; margin-bottom: 12px; }
   .deck-title h1 { font-size: 22px; font-weight: 700; }
   .deck-title p { font-size: 13px; color: #9a9a9a; }
-  .page--deck .deck { flex: 1; min-height: 0; width: auto; aspect-ratio: auto; margin: 0 16px; }
+  .page--deck .deck { flex: 1; min-height: 0; width: auto; aspect-ratio: auto; margin: 0 16px 34px; }
   .deck-hint { display: none; }
   .home-head { display: none; }
   .page--home { padding-top: 12px; }
@@ -274,7 +275,8 @@ p { margin: 0; }
 
 /* ─── Swipe deck ─────────────────────────────────────────────── */
 
-.deck { position: relative; width: var(--deck-w, 420px); max-width: 100%; aspect-ratio: 3 / 4.4; margin: 0 auto; }
+/* Bottom margin: the Pass / Like row hangs half off the card's bottom edge. */
+.deck { position: relative; width: var(--deck-w, 420px); max-width: 100%; aspect-ratio: 3 / 4.4; margin: 0 auto 30px; }
 .swipe-card {
   position: absolute; inset: 0; border-radius: 22px; overflow: hidden; background: #0e0e0e;
   touch-action: none; user-select: none; cursor: grab; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
@@ -283,7 +285,7 @@ p { margin: 0; }
 .swipe-card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 /* Room below the logo for the name and details that sit over the card. */
 .swipe-card img.swipe-card__logo { object-fit: contain; padding: 14% 14% 48%; background: #000; }
-.swipe-card__info { position: absolute; right: 16px; bottom: 30px; z-index: 3; background: rgba(255, 255, 255, 0.12); }
+.swipe-card__info { position: absolute; left: 16px; top: 16px; z-index: 3; background: rgba(255, 255, 255, 0.12); }
 .swipe-card__info:hover { background: rgba(255, 255, 255, 0.2); }
 /* Card face, after mymatcher SwipeScreen's card styles. */
 .sc-verified {
@@ -295,20 +297,21 @@ p { margin: 0; }
 .sc-cats { color: rgba(255, 255, 255, 0.8); font-size: 14px; margin-top: 3px; }
 .sc-loc { display: flex; align-items: center; gap: 4px; margin-top: 6px; color: #ccc; font-size: 12px; }
 /* Runs to the card's edges, so pills scroll off it rather than wrapping. */
-.sc-tags { display: flex; gap: 10px; margin: 16px -20px 0; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
+.sc-tags { display: flex; gap: 8px; margin: 14px -20px 0; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
 .sc-tags::-webkit-scrollbar { display: none; }
 .sc-pill {
-  flex: none; padding: 7px 15px; border-radius: 22px; background: rgba(255, 255, 255, 0.12);
-  border: 0.5px solid rgba(255, 255, 255, 0.3); font-size: 13px; font-weight: 600; white-space: nowrap;
+  flex: none; padding: 5px 13px; border-radius: 22px; background: rgba(255, 255, 255, 0.18);
+  border: 0.5px solid rgba(255, 255, 255, 0.35); font-size: 11px; font-weight: 600; white-space: nowrap;
 }
-.sc-stats { display: flex; margin-top: 20px; padding-top: 14px; border-top: 0.5px solid rgba(255, 255, 255, 0.2); }
+.sc-pill--lead { background: var(--accent); border-color: var(--accent); }
+.sc-stats { display: flex; margin-top: 18px; }
 .sc-stats > div { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 6px; text-align: center; }
-.sc-stats > div + div { border-left: 0.5px solid rgba(255, 255, 255, 0.2); }
-.sc-stats b { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.sc-stats span { margin-top: 3px; color: #aaa; font-size: 11px; }
-/* Bottom padding clears the Pass / Like row: its offset + the 64px heart + a gap. */
+.sc-stats > div + div { border-left: 1px solid rgba(255, 255, 255, 0.3); }
+.sc-stats b { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.sc-stats span { margin-top: 2px; color: rgba(255, 255, 255, 0.45); font-size: 11px; }
+/* Bottom padding clears the top half of the Pass / Like row. */
 .swipe-card__shade {
-  position: absolute; inset: auto 0 0 0; padding: 90px 20px 106px;
+  position: absolute; inset: auto 0 0 0; padding: 90px 20px 48px;
   background: linear-gradient(transparent, rgba(0, 0, 0, 0.6) 30%, rgba(0, 0, 0, 0.92));
 }
 .swipe-card__dots { position: absolute; top: 10px; left: 12px; right: 12px; display: flex; gap: 4px; }
@@ -322,14 +325,14 @@ p { margin: 0; }
 .stamp--like { left: 24px; color: var(--success); transform: rotate(-14deg); }
 .stamp--nope { right: 24px; color: var(--danger); transform: rotate(14deg); }
 .deck-actions {
-  position: absolute; left: 0; right: 0; bottom: 18px; z-index: 5; pointer-events: none;
+  position: absolute; left: 0; right: 0; bottom: -30px; z-index: 5; pointer-events: none;
   display: flex; justify-content: center; align-items: center; gap: 28px;
 }
 .deck-actions .icon-btn { pointer-events: auto; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35); transition: transform 0.12s; }
 .deck-actions .icon-btn:hover { transform: scale(1.06); }
 .deck-actions .icon-btn:active { transform: scale(0.94); opacity: 0.9; }
-.deck-actions__pass { width: 56px; height: 56px; background: #f4f4f4; color: #111; }
-.deck-actions__like { width: 64px; height: 64px; background: var(--accent); color: #fff; }
+.deck-actions__pass { width: 60px; height: 60px; background: #fff; color: var(--accent); }
+.deck-actions__like { width: 60px; height: 60px; background: var(--accent); color: #fff; }
 
 kbd {
   display: inline-block; min-width: 22px; padding: 1px 6px; border: 1px solid var(--border); border-bottom-width: 2px;
