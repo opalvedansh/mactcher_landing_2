@@ -51,6 +51,34 @@ function ImageField({ label, value, onChange, aspect }: { label: string; value: 
   );
 }
 
+type Drafts = Record<string, string>;
+
+/** Follower count (and account, except a creator's Instagram) for each picked platform. */
+export function PlatformFollowerRows({ profile, platforms, followers, setFollowers, handles, setHandles }: {
+  profile: AnyProfile; platforms: string[];
+  followers: Drafts; setFollowers: (d: Drafts) => void; handles: Drafts; setHandles: (d: Drafts) => void;
+}) {
+  const isBrand = profile.role === 'brand';
+  return (
+    <>
+      {platforms.map((p) => (
+        <div key={p} className="row wrap" style={{ alignItems: 'flex-end' }}>
+          <label className="field grow"><span>{platformLabel(p)} followers</span>
+            {isSyncedCount(profile.platform_followers, p)
+              ? <input className="input" disabled value={`${profile.platform_followers![p].count} (fetched)`} />
+              : <input className="input" inputMode="numeric" value={followers[p] ?? ''} onChange={(e) => setFollowers({ ...followers, [p]: e.target.value.replace(/\D/g, '') })} />}
+          </label>
+          {(isBrand || p !== 'instagram') && (
+            <label className="field grow"><span>{platformLabel(p)} account</span>
+              <input className="input" placeholder={HANDLE_PLACEHOLDERS[p] ?? 'Username or link'} value={handles[p] ?? ''} onChange={(e) => setHandles({ ...handles, [p]: e.target.value })} />
+            </label>
+          )}
+        </div>
+      ))}
+    </>
+  );
+}
+
 /** Uploads a blob: URL picked in this form; anything else is already a public URL. */
 const resolve = async (url: string) => (url.startsWith('blob:') ? uploadImage(await fetch(url).then((r) => r.blob())) : url);
 
@@ -180,20 +208,7 @@ export function EditProfile({ profile, onClose, onSaved }: { profile: AnyProfile
           <span>Platforms</span>
           <Chips options={PLATFORMS.map((p) => ({ id: p.id, label: p.label }))} value={platforms} onChange={setPlatforms} />
         </div>
-        {platforms.map((p) => (
-          <div key={p} className="row wrap" style={{ alignItems: 'flex-end' }}>
-            <label className="field grow"><span>{platformLabel(p)} followers</span>
-              {isSyncedCount(profile.platform_followers, p)
-                ? <input className="input" disabled value={`${profile.platform_followers![p].count} (fetched)`} />
-                : <input className="input" inputMode="numeric" value={followers[p] ?? ''} onChange={(e) => setFollowers({ ...followers, [p]: e.target.value.replace(/\D/g, '') })} />}
-            </label>
-            {(isBrand || p !== 'instagram') && (
-              <label className="field grow"><span>{platformLabel(p)} account</span>
-                <input className="input" placeholder={HANDLE_PLACEHOLDERS[p] ?? 'Username or link'} value={handles[p] ?? ''} onChange={(e) => setHandles({ ...handles, [p]: e.target.value })} />
-              </label>
-            )}
-          </div>
-        ))}
+        <PlatformFollowerRows profile={profile} platforms={platforms} followers={followers} setFollowers={setFollowers} handles={handles} setHandles={setHandles} />
 
         {isBrand ? (
           <>

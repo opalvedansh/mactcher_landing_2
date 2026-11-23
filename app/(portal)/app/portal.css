@@ -661,7 +661,7 @@ kbd {
 .cp__stat b { display: block; margin-bottom: 2px; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
 .cp__stat span { font-size: 11px; color: #9a9a9a; }
 .cp__group { margin-bottom: 28px; }
-.cp__group h2 { margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #fff; }
+.cp__group h2 { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #fff; }
 .cp__prompt { border: 0; background: none; color: #888; font-size: 13px; cursor: pointer; }
 .cp__logos { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
 .cp__logo { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #ddd; }
@@ -671,7 +671,32 @@ kbd {
 .cp__section { margin-bottom: 28px; text-align: left; }
 .cp__section--pkgs { padding-top: 20px; }
 .cp__h { margin-bottom: 16px; font-size: 14px; font-weight: 600; color: #fff; }
-.cp__h--lg { margin-bottom: 20px; font-size: 24px; font-weight: 700; }
+.cp__h--lg { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 24px; font-weight: 700; }
+.cp__pencil { display: inline-grid; place-items: center; padding: 4px; border: 0; background: none; color: #888; cursor: pointer; }
+.cp__pencil:hover { color: #fff; }
+.cp__h--lg .cp__pencil svg { width: 16px; height: 16px; }
+/* Section editors (the app's Worked With, Available On and Packages sheets). */
+.qe-sub { margin-bottom: 20px; font-size: 13px; line-height: 20px; color: #aaa; }
+.qe-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.qe-chips--scroll { max-height: 280px; overflow-y: auto; margin-bottom: 16px; }
+.qe-chip {
+  display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px 8px 8px; border: 1px solid #222; border-radius: 20px;
+  background: #222; color: #fff; font-size: 13px; cursor: pointer;
+}
+.qe-chip[aria-pressed="true"] { border-color: #ff6b2b; background: rgba(255, 107, 43, 0.12); }
+.qe-chip .cp__circle { width: 24px; height: 24px; font-size: 13px; }
+.qe-chip .cp__initials { font-size: 8px; }
+.qe-add { display: flex; gap: 10px; margin-bottom: 16px; }
+.qe-add .input { flex: 1; }
+.qe-add__btn { padding: 0 16px; border: 0; border-radius: 12px; background: #222; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
+.qe-followers { margin-top: 20px; }
+.qe-label { font-size: 13px; color: #9a9a9a; }
+.qe-hint { margin-top: -6px; font-size: 12px; line-height: 16px; color: #777; }
+.qe-save {
+  display: grid; place-items: center; width: 100%; margin-top: 20px; padding: 14px; border: 0; border-radius: 12px;
+  background: #ff6b2b; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;
+}
+.qe-save:disabled { opacity: 0.6; cursor: default; }
 .cp__reels { display: flex; gap: 12px; margin: 0 -20px; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
 .cp__reels::-webkit-scrollbar { display: none; }
 .cp__reel { position: relative; flex: none; width: 100px; height: 150px; border-radius: 12px; overflow: hidden; background: #333; }

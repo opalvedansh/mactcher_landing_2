@@ -20,6 +20,7 @@ import { BusinessVerifyModal } from './Verify';
 import { Icon, MatchrLogo, Verified, type IconName } from '../icons';
 import { CompanyLogo, GLYPH, PlatformLogo } from './brandLogos';
 import { CampaignIcon, DELIVERABLE_ICON, VibeIcon } from './brandIcons';
+import { SectionEditor, type SectionKey } from './SectionEditors';
 
 const PAYMENT_LABEL: Record<PaymentMode, string> = { bank_transfer: 'Bank transfer', upi: 'UPI', cheque: 'Cheque', paypal: 'PayPal' };
 const PACKAGE_ICON: Record<CreatorPackage['type'], IconName> = { story: 'story', reel: 'reel', ugc: 'ugc', brand_collab: 'users', custom: 'star' };
@@ -45,12 +46,13 @@ type Props = {
   onProfileChange?: (p: AnyProfile) => void;
 };
 
-function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: Omit<Props, 'profile' | 'onProfileChange'> & { p: InfluencerProfile }) {
+function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit, onProfileChange }: Omit<Props, 'profile'> & { p: InfluencerProfile }) {
   const { scrollY } = useScroll();
   const still = useReducedMotion();
   // The photos scroll at half speed under the panel, as in the app.
   const y = useTransform(scrollY, (v) => (still ? 0 : v / 2));
   const [index, setIndex] = useState(0);
+  const [editing, setEditing] = useState<SectionKey | null>(null);
 
   const avatar = isValidUrl(p.avatar_url) ? p.avatar_url : null;
   const cover = isValidUrl(p.cover_url) ? p.cover_url : null;
@@ -68,6 +70,11 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: 
   const reels = p.reels ?? [];
   const packages = p.packages ?? [];
   const add = own && onEdit;
+  // Own profile: the app's pencil beside a section title opens that section's editor.
+  const edit = own && onProfileChange;
+  const pencil = (section: SectionKey, label: string) => edit && (
+    <button className="cp__pencil" aria-label={`Edit ${label}`} onClick={() => setEditing(section)}><Icon name="pencil" size={14} /></button>
+  );
 
   return (
     <div className="cp">
@@ -100,18 +107,18 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: 
 
         <div className="cp__stats">{stats.map((s) => <div key={s.l} className="cp__stat"><b>{s.v}</b><span>{s.l}</span></div>)}</div>
 
-        {(workedWith.length > 0 || add) && (
+        {(workedWith.length > 0 || edit) && (
           <section className="cp__group">
-            <h2>Worked With</h2>
+            <h2>Worked With{pencil('worked', 'worked with')}</h2>
             {workedWith.length > 0
               ? <div className="cp__logos">{workedWith.map((c) => <CompanyLogo key={c} name={c} />)}</div>
-              : <button className="cp__prompt" onClick={onEdit}>Add companies you&apos;ve worked with</button>}
+              : <button className="cp__prompt" onClick={() => setEditing('worked')}>Add companies you&apos;ve worked with</button>}
           </section>
         )}
 
-        {(platforms.length > 0 || add) && (
+        {(platforms.length > 0 || edit) && (
           <section className="cp__group">
-            <h2>Available on</h2>
+            <h2>Available on{pencil('platforms', 'platforms')}</h2>
             {platforms.length > 0 ? (
               <div className="cp__logos">
                 {platforms.map((id) => {
@@ -125,7 +132,7 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: 
                   );
                 })}
               </div>
-            ) : <button className="cp__prompt" onClick={onEdit}>Add the platforms you create on</button>}
+            ) : <button className="cp__prompt" onClick={() => setEditing('platforms')}>Add the platforms you create on</button>}
           </section>
         )}
 
@@ -144,9 +151,9 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: 
           </section>
         )}
 
-        {(packages.length > 0 || onRequestQuote || add) && (
+        {(packages.length > 0 || onRequestQuote || edit) && (
           <section className="cp__section cp__section--pkgs">
-            <h2 className="cp__h cp__h--lg">Packages</h2>
+            <h2 className="cp__h cp__h--lg">Packages{packages.length > 0 && pencil('packages', 'packages')}</h2>
             <div className="cp__pkgs">
               {packages.map((pkg, i) => {
                 const { name: pkgName, desc } = describePackage(pkg);
@@ -159,8 +166,8 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: 
                   </div>
                 );
               })}
-              {add && packages.length === 0 && (
-                <button className="cp__pkg cp__pkg--empty" onClick={onEdit}>
+              {edit && packages.length === 0 && (
+                <button className="cp__pkg cp__pkg--empty" onClick={() => setEditing('packages')}>
                   <div className="cp__pkg-body"><b>Add your packages and prices</b><span>Brands see what you offer and what you charge.</span></div>
                   <span className="cp__pkg-add"><Icon name="plus" size={16} width={2.8} /></span>
                 </button>
@@ -183,6 +190,7 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: 
 
         {actions && <div className="profile-cta-wrap">{actions}</div>}
       </div>
+      {editing && onProfileChange && <SectionEditor section={editing} profile={p} onClose={() => setEditing(null)} onSaved={onProfileChange} />}
     </div>
   );
 }

@@ -27,7 +27,7 @@ export function PlatformLogo({ id }: { id: string }) {
   );
 }
 
-const COMPANIES: { name: string; icon?: keyof typeof GLYPH; color: string }[] = [
+export const COMPANIES: { name: string; icon?: keyof typeof GLYPH; color: string }[] = [
   { name: 'Nike', color: '#111111' }, { name: 'Adidas', color: '#000000' }, { name: 'Puma', color: '#1A1A1A' },
   { name: 'Apple', icon: 'apple', color: '#000000' }, { name: 'Samsung', color: '#1428A0' },
   { name: 'Google', icon: 'google', color: '#4285F4' }, { name: 'Amazon', icon: 'amazon', color: '#FF9900' },
