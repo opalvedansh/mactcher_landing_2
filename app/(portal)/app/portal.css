@@ -309,6 +309,11 @@ p { margin: 0; }
 .sc-stats > div + div { border-left: 1px solid rgba(255, 255, 255, 0.3); }
 .sc-stats b { font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .sc-stats span { margin-top: 2px; color: rgba(255, 255, 255, 0.45); font-size: 11px; }
+.sc-worked { margin-top: 14px; }
+.sc-worked > span { display: block; margin-bottom: 8px; color: #9a9a9a; font-size: 12px; font-weight: 600; }
+.sc-worked > div { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sc-worked .cp__circle { width: 32px; height: 32px; font-size: 15px; }
+.sc-worked b.cp__circle { background: #000; font-size: 12px; font-weight: 700; }
 /* Bottom padding clears the top half of the Pass / Like row. */
 .swipe-card__shade {
   position: absolute; inset: auto 0 0 0; padding: 90px 20px 48px;

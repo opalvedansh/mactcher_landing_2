@@ -4,6 +4,7 @@ import type { BrandProfile, InfluencerProfile } from '@/lib/matchr/types';
 import { compactCount } from '@/lib/matchr/utils/followers';
 import { categoryLabel } from '@/lib/matchr/options';
 import { Icon } from './icons';
+import { CompanyLogo } from './profile/brandLogos';
 
 export const isValidUrl = (url?: string | null): url is string =>
   !!url && !url.startsWith('blob:') && !url.startsWith('file://');
@@ -20,7 +21,7 @@ export function formatBudget(min?: number | null, max?: number | null) {
 
 // `logo`: the image is a logo, shown whole rather than cropped like a photo.
 // `lead`: an accent pill in front of the tags, naming what they are.
-type Card = { image: string | null; logo?: boolean; lead?: string; name: string; verified: boolean; subtitle: string; location: string; tags: string[]; stats: { value: string; label: string }[] };
+type Card = { image: string | null; logo?: boolean; lead?: string; name: string; verified: boolean; subtitle: string; location: string; tags: string[]; stats: { value: string; label: string }[]; workedWith?: string[] };
 
 export function brandCard(p: BrandProfile): Card {
   const stats: Card['stats'] = [];
@@ -56,10 +57,14 @@ export function creatorCard(p: InfluencerProfile): Card {
     verified: !!p.verified,
     subtitle: (p.categories ?? []).join(' · '),
     location: p.location ?? '',
-    tags: p.worked_with?.length ? p.worked_with.slice(0, 3).map((b) => `Worked with ${b}`) : [],
+    lead: 'Creates',
+    tags: p.categories ?? [],
     stats,
+    workedWith: p.worked_with ?? [],
   };
 }
+
+const SHOWN_WORKED = 5;
 
 export function ProfileCard({ card }: { card: Card }) {
   return (
@@ -76,6 +81,15 @@ export function ProfileCard({ card }: { card: Card }) {
         {card.stats.length > 0 && (
           <div className="sc-stats">
             {card.stats.map((s) => <div key={s.label}><b>{s.value}</b><span>{s.label}</span></div>)}
+          </div>
+        )}
+        {!!card.workedWith?.length && (
+          <div className="sc-worked">
+            <span>Worked With</span>
+            <div>
+              {card.workedWith.slice(0, SHOWN_WORKED).map((c) => <CompanyLogo key={c} name={c} />)}
+              {card.workedWith.length > SHOWN_WORKED && <b className="cp__circle">+{card.workedWith.length - SHOWN_WORKED}</b>}
+            </div>
           </div>
         )}
       </div>
