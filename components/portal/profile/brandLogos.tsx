@@ -3,7 +3,7 @@
 // Colours and the company list follow mymatcher InfluencerProfileScreen.
 import { Icon } from '../icons';
 
-const GLYPH = {
+export const GLYPH = {
   instagram: '', youtube: '', tiktok: '', x: '', twitter: '', reddit: '',
   pinterest: '', facebook: '', linkedin: '', snapchat: '', threads: '',
   spotify: '', twitch: '', discord: '', behance: '', dribbble: '',

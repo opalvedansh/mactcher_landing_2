@@ -73,10 +73,10 @@ export default function PublicProfilePage() {
         profile={profile}
         own={false}
         onRequestQuote={matchId ? () => router.push(`/app/messages/${matchId}`) : undefined}
-        headerActions={matchId ? (
-          <button className="btn btn--primary" onClick={() => router.push(`/app/messages/${matchId}`)}>Message</button>
+        actions={matchId ? (
+          <button className="profile-cta" onClick={() => router.push(`/app/messages/${matchId}`)}>Message</button>
         ) : (
-          <button className="btn btn--primary" disabled={interested || sending} onClick={interestedClick}>
+          <button className="profile-cta" data-done={interested} disabled={interested || sending} aria-busy={sending} onClick={interestedClick}>
             {sending ? <Spinner small /> : interested ? 'Interest sent' : 'Interested'}
           </button>
         )}
