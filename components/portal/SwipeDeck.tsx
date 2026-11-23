@@ -2,6 +2,7 @@
 
 // Web version of mymatcher src/features/swipe/SwipeDeck.tsx: drag the top
 // card past the threshold (or fling it), or use the buttons / arrow keys.
+// Tapping the card or swiping it up opens the profile.
 import { useEffect, useRef, type MutableRefObject, type ReactNode } from 'react';
 import { animate, motion, useMotionValue, useTransform, type PanInfo } from 'framer-motion';
 import type { SwipeDir } from '@/lib/matchr/useSwipeQueue';
@@ -18,10 +19,13 @@ function TopCard({ children, onSwipe, flingRef, onOpen, label }: {
   label: string;
 }) {
   const x = useMotionValue(0);
+  const y = useMotionValue(0);
   const rotate = useTransform(x, [-320, 320], [-14, 14]);
   const likeOpacity = useTransform(x, [20, DISTANCE], [0, 1]);
   const nopeOpacity = useTransform(x, [-DISTANCE, -20], [1, 0]);
   const gone = useRef(false);
+  // A drag that springs back is not a tap.
+  const dragged = useRef(false);
 
   const fling = (dir: SwipeDir) => {
     if (gone.current) return;
@@ -31,21 +35,27 @@ function TopCard({ children, onSwipe, flingRef, onOpen, label }: {
   flingRef.current = fling;
 
   const onDragEnd = (_: unknown, info: PanInfo) => {
-    if (info.offset.x > DISTANCE || info.velocity.x > VELOCITY) fling('right');
+    const up = -info.offset.y > Math.abs(info.offset.x) && (-info.offset.y > DISTANCE || -info.velocity.y > VELOCITY);
+    animate(y, 0, { type: 'spring', stiffness: 400, damping: 30 });
+    if (up) { animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 }); onOpen(); }
+    else if (info.offset.x > DISTANCE || info.velocity.x > VELOCITY) fling('right');
     else if (info.offset.x < -DISTANCE || info.velocity.x < -VELOCITY) fling('left');
     else animate(x, 0, { type: 'spring', stiffness: 400, damping: 30 });
   };
 
   return (
     <motion.div
-      className="swipe-card" style={{ x, rotate, zIndex: 2 }}
-      drag="x" dragElastic={0.9} dragConstraints={{ left: 0, right: 0 }} onDragEnd={onDragEnd}
-      role="group" aria-roledescription="card" aria-label={label}
+      className="swipe-card" style={{ x, y, rotate, zIndex: 2 }}
+      drag dragElastic={0.9} dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }} onDragEnd={onDragEnd}
+      onDragStart={() => { dragged.current = true; }}
+      onTapStart={() => { dragged.current = false; }}
+      // framer-motion also fires onTap for Enter on the focused card.
+      onTap={() => !gone.current && !dragged.current && onOpen()} tabIndex={0}
+      role="group" aria-roledescription="card" aria-label={`${label}. Press Enter to view the profile`}
     >
       {children}
       <motion.div className="stamp stamp--like" style={{ opacity: likeOpacity }}>LIKE</motion.div>
       <motion.div className="stamp stamp--nope" style={{ opacity: nopeOpacity }}>NOPE</motion.div>
-      <button className="icon-btn swipe-card__info" onClick={onOpen} aria-label={`View ${label}'s profile`}><Icon name="info" size={22} width={1.8} /></button>
     </motion.div>
   );
 }
