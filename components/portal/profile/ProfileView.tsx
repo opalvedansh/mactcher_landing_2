@@ -39,15 +39,13 @@ type Props = {
   onRequestQuote?: () => void;
   /** Own creator profile: beside the name when not verified (the Get Verified pill). */
   nameExtra?: ReactNode;
-  /** Own creator profile: tools under the stats. */
-  children?: ReactNode;
   /** Own profile: the "Add …" prompts open the edit sheet. */
   onEdit?: () => void;
   /** Own brand profile: verification updates the profile. */
   onProfileChange?: (p: AnyProfile) => void;
 };
 
-function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, children, onEdit }: Omit<Props, 'profile' | 'onProfileChange'> & { p: InfluencerProfile }) {
+function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, onEdit }: Omit<Props, 'profile' | 'onProfileChange'> & { p: InfluencerProfile }) {
   const { scrollY } = useScroll();
   const still = useReducedMotion();
   // The photos scroll at half speed under the panel, as in the app.
@@ -77,14 +75,14 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, children, 
         <motion.div className="cp__parallax" style={{ y }}>
           {photos.length > 0 ? (
             <div className="cp__strip" onScroll={(e) => setIndex(snapIndex(e.currentTarget))}>
-              {photos.map((src) => <img key={src} src={src} alt="" />)}
+              {photos.map((src, i) => <img key={i} src={src} alt="" />)}
             </div>
           ) : (
             <div className="cp__nophoto"><Icon name="image" size={36} /><span>{own ? 'Add a photo in Edit profile' : 'No photos yet'}</span></div>
           )}
         </motion.div>
         <div className="cp__shade" />
-        {photos.length > 1 && <div className="cp__bars">{photos.map((src, i) => <span key={src} data-on={i <= index} />)}</div>}
+        {photos.length > 1 && <div className="cp__bars">{photos.map((_, i) => <span key={i} data-on={i <= index} />)}</div>}
       </div>
 
       <div className="cp__panel">
@@ -101,8 +99,6 @@ function CreatorProfile({ p, own, actions, onRequestQuote, nameExtra, children, 
         {p.bio ? <p className="cp__bio">{p.bio}</p> : own && <p className="cp__bio">Add a bio so brands know what you make.</p>}
 
         <div className="cp__stats">{stats.map((s) => <div key={s.l} className="cp__stat"><b>{s.v}</b><span>{s.l}</span></div>)}</div>
-
-        {children}
 
         {(workedWith.length > 0 || add) && (
           <section className="cp__group">
@@ -211,7 +207,7 @@ function formatReplyTime(seconds: number) {
 
 const MAX_SHOWN_MATCHES = 5;
 
-function BrandProfile({ p, own, actions, onEdit, onProfileChange }: Omit<Props, 'profile' | 'nameExtra' | 'children' | 'onRequestQuote'> & { p: BrandProfile }) {
+function BrandProfile({ p, own, actions, onEdit, onProfileChange }: Omit<Props, 'profile' | 'nameExtra' | 'onRequestQuote'> & { p: BrandProfile }) {
   const [index, setIndex] = useState(0);
   const [matches, setMatches] = useState<MatchRecord[] | null>(null);
   const [matchTotal, setMatchTotal] = useState(0);
@@ -348,14 +344,14 @@ function BrandProfile({ p, own, actions, onEdit, onProfileChange }: Omit<Props, 
       <div className="bp__carousel">
         {photos.length > 0 ? (
           <div className="bp__strip" onScroll={(e) => setIndex(snapIndex(e.currentTarget))}>
-            {photos.map((src) => <img key={src} src={src} alt="" />)}
+            {photos.map((src, i) => <img key={i} src={src} alt="" />)}
           </div>
         ) : (
           <div className="bp__carousel-empty"><Icon name="image" size={40} /><span>{own ? 'Add photos of your brand campaigns' : 'No campaign photos yet'}</span></div>
         )}
         {photos.length > 1 && (
           <>
-            <div className="bp__dots">{photos.map((src, i) => <span key={src} data-on={i === index} />)}</div>
+            <div className="bp__dots">{photos.map((_, i) => <span key={i} data-on={i === index} />)}</div>
             <span className="bp__arrow"><Icon name="next" size={16} /></span>
           </>
         )}

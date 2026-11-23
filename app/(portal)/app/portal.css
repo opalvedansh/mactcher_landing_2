@@ -660,12 +660,6 @@ kbd {
 .cp__stat + .cp__stat::before { content: ''; position: absolute; left: 0; top: 50%; width: 0.5px; height: 28px; margin-top: -14px; background: rgba(255, 255, 255, 0.12); }
 .cp__stat b { display: block; margin-bottom: 2px; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; font-variant-numeric: tabular-nums; }
 .cp__stat span { font-size: 11px; color: #9a9a9a; }
-.cp-sync {
-  display: inline-flex; align-items: center; gap: 6px; margin: -20px 0 24px; padding: 6px 12px; border: 0; border-radius: 999px;
-  background: none; color: #aaa; font-size: 12px; font-weight: 600; cursor: pointer;
-}
-.cp-sync:hover { color: #fff; background: rgba(255, 255, 255, 0.06); }
-.cp-sync:disabled { opacity: 0.6; cursor: default; }
 .cp__group { margin-bottom: 28px; }
 .cp__group h2 { margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #fff; }
 .cp__prompt { border: 0; background: none; color: #888; font-size: 13px; cursor: pointer; }
