@@ -4,7 +4,7 @@
 // web: a 1080x1920 canvas in canvas units, scaled to fit its container.
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import {
-  CANVAS_H, CANVAS_W, FILTERS, FONTS, arrowHead, contrastOn, pathPoints,
+  CANVAS_H, CANVAS_W, FILTERS, FONTS, contrastOn,
   type Layer, type StoryLayout, type StoryMusic, type Stroke, type TextLayer,
 } from '@/lib/matchr/story';
 
@@ -91,20 +91,20 @@ export function placed(p: { x: number; y: number; scale: number; rotation: numbe
   return { position: 'absolute', left: p.x, top: p.y, transform: `translate(-50%, -50%) rotate(${p.rotation}rad) scale(${p.scale})` };
 }
 
+// Drawn as the app's StrokePath. An arrow's head is already part of its `d`.
 function StrokePath({ s }: { s: Stroke }) {
-  const common = { fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
+  const common = { d: s.d, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const };
   if (s.brush === 'neon') {
-    return <path d={s.d} {...common} stroke="#FFFFFF" strokeWidth={s.width} style={{ filter: `drop-shadow(0 0 ${s.width}px ${s.color})` }} />;
-  }
-  if (s.brush === 'arrow') {
     return (
       <>
-        <path d={s.d} {...common} stroke={s.color} strokeWidth={s.width} />
-        <path d={arrowHead(pathPoints(s.d), s.width)} {...common} stroke={s.color} strokeWidth={s.width} />
+        <path {...common} stroke={s.color} strokeWidth={s.width * 2.6} strokeOpacity={0.25} />
+        <path {...common} stroke={s.color} strokeWidth={s.width * 1.5} strokeOpacity={0.55} />
+        <path {...common} stroke="#FFFFFF" strokeWidth={s.width * 0.6} />
       </>
     );
   }
-  return <path d={s.d} {...common} stroke={s.color} strokeWidth={s.width} opacity={s.brush === 'marker' ? 0.55 : 1} />;
+  if (s.brush === 'marker') return <path {...common} stroke={s.color} strokeWidth={s.width} strokeOpacity={0.55} strokeLinecap="square" />;
+  return <path {...common} stroke={s.color} strokeWidth={s.width} />;
 }
 
 /**

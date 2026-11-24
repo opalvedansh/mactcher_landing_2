@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { guardRedirect, type GuardState } from './guard.ts';
 import { nextStep, prevStep } from './onboardingSteps.ts';
 import { notificationHref } from './utils/notificationRoutes.ts';
+import { arrowHead, clockNow, dateNow, keepInClip, pathFromPoints, pathPoints, strokeHit, strokeWidthFor, type Stroke } from './story.ts';
 
 const base: GuardState = { loading: false, signedIn: true, passwordRecovery: false, userDataError: false, onboardingComplete: true };
 
@@ -37,5 +38,22 @@ assert.equal(notificationHref('new_like'), '/app/likes');
 assert.equal(notificationHref('new_message', 'm1'), '/app/messages/m1');
 assert.equal(notificationHref('new_message'), '/app/messages');
 assert.equal(notificationHref('story_mention', null, 'u1'), '/app/home?story=u1');
+
+// Story drawing and stickers
+const line: Stroke = { brush: 'pen', color: '#fff', width: 10, d: pathFromPoints([{ x: 0, y: 0 }, { x: 100, y: 0 }]) };
+assert.equal(strokeHit(line, { x: 100, y: 20 }, 20), true);
+assert.equal(strokeHit(line, { x: 100, y: 60 }, 20), false);
+assert.equal(strokeWidthFor('eraser', 0), 40);
+assert.equal(strokeWidthFor('marker', 1), 110);
+const pts = [{ x: 0, y: 0 }, { x: 200, y: 0 }, { x: 400, y: 0 }];
+assert.equal(pathPoints(pathFromPoints(pts) + arrowHead(pts, 14)).at(-2)?.x, 400); // an arrow's head is part of its `d`, tip at the stroke's end
+assert.equal(clockNow(new Date(2026, 0, 5, 0, 7)), '12:07 AM');
+assert.equal(dateNow(new Date(2026, 10, 25)), 'NOV 25');
+const song = { currentTime: 25.2 };
+keepInClip(song, 10);
+assert.equal(song.currentTime, 10);
+song.currentTime = 24;
+keepInClip(song, 10);
+assert.equal(song.currentTime, 24);
 
 console.log('portal checks passed');

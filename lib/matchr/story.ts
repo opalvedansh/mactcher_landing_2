@@ -308,4 +308,39 @@ export function pathPoints(d: string): Point[] {
   return pts;
 }
 
+/** Stroke width for the size slider (0–1), as the app's strokeWidthFor. */
+export const strokeWidthFor = (brush: BrushId | 'eraser', v: number) =>
+  brush === 'eraser' ? 40 + v * 100 : brush === 'marker' ? 20 + v * 90 : 6 + v * 54;
+
+/** Whether the eraser at `p` (radius `reach`) touches the stroke. */
+export const strokeHit = (s: Stroke, p: Point, reach: number) =>
+  pathPoints(s.d).some((q) => Math.hypot(q.x - p.x, q.y - p.y) < reach + s.width / 2);
+
+/** Latest start of the song clip: the preview is 30 seconds. */
+export const MAX_CLIP_START = 30 - MUSIC_CLIP_SECONDS;
+
+/** Keeps a playing song inside its chosen clip, looping back to `start`. */
+export function keepInClip(a: { currentTime: number }, start: number) {
+  if (a.currentTime < start || a.currentTime >= start + MUSIC_CLIP_SECONDS) a.currentTime = start;
+}
+
+// ─── Stickers (the app's StickerSheet) ────────────────────────────
+
+export const EMOJI = (
+  '😀 😂 🥹 😍 🥰 😘 😎 🤩 🥳 😇 🤔 🤫 😴 🥲 😭 😡 🤯 🥶 🤗 🙃 ' +
+  '👍 👎 👏 🙌 🙏 💪 👀 ✌️ 🤞 👋 🫶 🤝 💅 🔥 ✨ 💯 ⚡ 🌟 ⭐ 💥 ' +
+  '❤️ 🧡 💛 💚 💙 💜 🖤 🤍 💔 💖 💘 💌 🎉 🎊 🎁 🎈 🏆 🥇 🎯 🚀 ' +
+  '📸 🎥 🎬 🎤 🎧 🎵 📱 💻 💡 📈 💰 💸 🛍️ 👗 👟 💄 👜 🕶️ 💍 ⌚ ' +
+  '☕ 🍕 🍔 🍟 🍣 🍩 🍰 🍓 🥑 🍹 🌈 ☀️ 🌙 🌊 🌸 🌴 🏖️ ✈️ 🗺️ 📍'
+).split(' ');
+
+const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+
+export function clockNow(d = new Date()) {
+  const h = d.getHours() % 12 || 12;
+  return `${h}:${String(d.getMinutes()).padStart(2, '0')} ${d.getHours() < 12 ? 'AM' : 'PM'}`;
+}
+
+export const dateNow = (d = new Date()) => `${MONTHS[d.getMonth()]} ${d.getDate()}`;
+
 export const newId = () => Math.random().toString(36).slice(2, 10);
